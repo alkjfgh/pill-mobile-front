@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "224490414807",
+    "project_id": "pill-mobile-442106",
+    "storage_bucket": "pill-mobile-442106.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:224490414807:android:16e0d83028c0e940828692",
+        "android_client_info": {
+          "package_name": "com.spica.pillmobilefront"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "224490414807-0sarci38gg865dc2m0o2a7aj41vobi3m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spica.pillmobilefront",
+            "certificate_hash": "e3269a2678c4256145be53d6e59c1073752a44de"
+          }
+        },
+        {
+          "client_id": "224490414807-j4p0q498a68abg5lrch2q3es80j1nc6b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDb0czx8rcJbcDxZ_tJQPhWKxzWl9U2u5A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "224490414807-j4p0q498a68abg5lrch2q3es80j1nc6b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

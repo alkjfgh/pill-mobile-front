@@ -3,11 +3,14 @@ import { signInWithCredential, GoogleAuthProvider, signOut } from "firebase/auth
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { auth } from "../firebaseConfig";
+// import api from "../api";
+// import axios from "axios";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const useGetGoogleAuth = () => {
   const [user, setUser] = useState(null);
+  // const [res, setRes] = useState(null);
 
   // Google 인증 요청 초기화
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
@@ -24,6 +27,22 @@ const useGetGoogleAuth = () => {
       signInWithCredential(auth, credential)
         .then((userCredential) => {
           const user = userCredential.user; // 사용자 정보 가져오기
+          // try{
+          //   const res = api.post("/api/users", user)
+          //   .then((response) => {
+          //     console.log("Response:", response.data);
+          //   })
+          //   .catch((error) => {
+          //     console.error("Error:", error);
+          //   });
+          //   setRes(res);
+            // const res = axios.post("https://1.209.148.143:8443/api/users", user);
+            // const res2 = axios.get("https://1.209.148.143:8443/api/users/1");
+            // console.log("res : " + JSON.stringify(res));
+            // console.log("res2 : " + JSON.stringify(res2));
+          // } catch(error){
+          //   console.error(error);
+          // }
           console.log("User Info:", user);
           setUser(user); // 사용자 상태 업데이트
         })
