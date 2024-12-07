@@ -4,7 +4,7 @@ import useGetGoogleAuth from "../auth/useGetGoogleAuth";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 
 const Main = () => {
-  const { user, promptAsync, handleLogout, request } = useGetGoogleAuth();
+  const { user, promptAsync, handleLogout, request, status } = useGetGoogleAuth();
 
   return (
     <View style={styles.container}>
@@ -12,6 +12,7 @@ const Main = () => {
         <View>
           <Text>Welcome222, {user.displayName}!</Text>
           <Text>Email: {user.email}</Text>
+          <Text>status: {status}</Text>
           <Button title="Logout" onPress={handleLogout} />
         </View>
       ) : (
@@ -21,6 +22,7 @@ const Main = () => {
           onPress={() => promptAsync({ useProxy: false })}
         />
       )}
+      
     </View>
   );
 };
