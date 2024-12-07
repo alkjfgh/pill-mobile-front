@@ -3,8 +3,6 @@ import { signInWithCredential, GoogleAuthProvider, signOut } from "firebase/auth
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import { auth } from "../firebaseConfig";
-// import api from "../api";
-// import axios from "axios";
 
 WebBrowser.maybeCompleteAuthSession();
 
