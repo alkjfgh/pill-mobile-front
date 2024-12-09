@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Image, Alert, Button } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import styles from "../style/PhotoStyle";
 import camera from "../assets/camera.png";

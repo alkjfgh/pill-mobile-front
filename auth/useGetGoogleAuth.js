@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { signInWithCredential, GoogleAuthProvider, signOut } from "firebase/auth";
+import { signInWithCredential, GoogleAuthProvider, signOut, onAuthStateChanged } from "firebase/auth";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth } from "../firebaseConfig";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -16,7 +17,27 @@ const useGetGoogleAuth = () => {
     androidClientId: "224490414807-0sarci38gg865dc2m0o2a7aj41vobi3m.apps.googleusercontent.com",
   });
 
-  // 로그인 처리
+  // 앱 시작 시 Firebase 인증 상태 확인 및 AsyncStorage에서 사용자 정보 로드
+  useEffect(() => {
+    const checkUser = async () => {
+      // Firebase 인증 상태 변경 감지
+      onAuthStateChanged(auth, async (currentUser) => {
+        if(currentUser){
+          setUser(currentUser);
+          await AsyncStorage.setItem("@user", JSON.stringify(currentUser));
+        }
+        else{
+          const savedUser = await AsyncStorage.getItem("@user");
+          if(savedUser){
+            setUser(JSON.parse(savedUser));
+          }
+        }
+      });
+    };
+    checkUser();
+  }, []);
+
+  // Google 로그인 처리
   useEffect(() => {
     if (response?.type === "success") {
       const { id_token } = response.params;
@@ -32,6 +53,9 @@ const useGetGoogleAuth = () => {
           }
           else if(status == 200){
             signIn(user);
+          }
+          else if(status == 500){
+            alert("서버 에러");
           }
           console.log("User Info:", user);
           setUser(user); // 사용자 상태 업데이트
@@ -52,13 +76,12 @@ const useGetGoogleAuth = () => {
         },
       });
 
-      // if (!res.ok) {
-      //   throw new Error(`HTTP error! status[userCheck]: ${res.status}`);
-      // }
+      if (!res.ok) {
+        throw new Error(`HTTP error! status[userCheck]: ${res.status}`);
+      }
   
       const data = await res.json();
       console.log("Response Data[userCheck]:", data);
-      setStatus(res.status);
       return res.status
     } catch(error) {
       console.error("Error sending user data[userCheck]:", error.message);
@@ -119,7 +142,6 @@ const useGetGoogleAuth = () => {
 
       const data = await res.json();
       console.log("Response Data[signIn]:", data);
-      setStatus(res.status);
     } catch (error) {
       console.error("Error sending user data[signIn]:", error.message);
     }
@@ -129,6 +151,7 @@ const useGetGoogleAuth = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth); // Firebase에서 로그아웃
+      await AsyncStorage.removeItem("@user"); // AsyncStorage에서 사용자 정보 제거
       setUser(null); // 사용자 상태 초기화
       console.log("User signed out.");
     } catch (error) {

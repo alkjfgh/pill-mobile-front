@@ -9,7 +9,7 @@ export default function SplashScreenComponent({ children }) {
 
   useEffect(() => {
     const prepare = async () => {
-      // 최소 3초 로딩
+      // 최소 1초 로딩
       await new Promise((resolve) => setTimeout(resolve, 1000));
       await SplashScreen.hideAsync(); // 스플래시 숨기기
       setIsReady(true); // 로딩 완료

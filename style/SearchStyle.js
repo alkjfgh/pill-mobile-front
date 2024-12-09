@@ -7,6 +7,23 @@ const SearchStyle = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  resultContainer: {
+    marginTop: 20,
+    alignItems: "center",
+    backgroundColor: "#f8f8f8",
+    padding: 10,
+    borderRadius: 8,
+    width: "100%",
+  },
+  resultLabel: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  resultText: {
+    fontSize: 16,
+    color: "#333",
+  },
 });
 
 export default SearchStyle;
