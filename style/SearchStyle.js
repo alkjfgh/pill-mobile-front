@@ -24,6 +24,11 @@ const SearchStyle = StyleSheet.create({
     fontSize: 16,
     color: "#333",
   },
+  accuracyText: {
+    marginTop: 5,
+    fontSize: 14,
+    color: "#666",
+  },
 });
 
 export default SearchStyle;
