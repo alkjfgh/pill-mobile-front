@@ -71,6 +71,21 @@ const SearchScreen = () => {
       formData.append("result", record.result);
       formData.append("email", record.email);
 
+      // for (let pair of formData._parts) {
+      //   console.log(`FormData 내용 - ${pair[0]}:`, pair[1]);
+      // }
+      for (let pair of formData._parts) {
+        console.log(`FormData 항목 - ${pair[0]}:`);
+        console.log('값:', pair[1]);
+        console.log('타입:', typeof pair[1]);
+        
+        // 객체인 경우 더 자세한 정보 출력
+        if (typeof pair[1] === 'object' && pair[1] !== null) {
+          console.log('객체 상세 정보:', JSON.stringify(pair[1], null, 2));
+        }
+        console.log('------------------------');
+      }
+
       const res = await fetch("http://1.209.148.143:8883/api/logs/", {
         method: "POST",
         headers: {
@@ -105,8 +120,12 @@ const SearchScreen = () => {
       return;
     }
 
+    const now = new Date();
+    const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
     const newRecord = {
-      date: new Date().toLocaleString(),
+      // date: new Date().toLocaleString(),
+      date: formattedDate,
       image: pillImage,
       result,
       email: user.email,
