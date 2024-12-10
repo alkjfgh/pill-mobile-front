@@ -1,46 +1,80 @@
 import React from "react";
-import { Text, View, ImageBackground, Image} from "react-native";
+import { Text, View, Image, Alert, DevSettings } from "react-native";
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
-import { Ionicons } from '@expo/vector-icons';
+// import * as Updates from 'expo-updates';
+import styles from "../style/MyCustomDrawerStyle";
+import useGetGoogleAuth from "../auth/useGetGoogleAuth";
+// import { Ionicons } from '@expo/vector-icons';
 
 const MyCustomDrawer = props => {
+    const { user, handleLogout } = useGetGoogleAuth();
+
+    const handleLogoutPress = () => {
+        Alert.alert(
+            "로그아웃",
+            "정말 로그아웃하시겠습니까?",
+            [
+                {
+                    text: "취소",
+                    style: "cancel"
+                },
+                {
+                    text: "확인",
+                    onPress: async () => {
+                        await handleLogout();
+                        DevSettings.reload();  // 앱 재시작
+                        console.log("앱 재시작");
+                    }
+                }
+            ]
+        );
+    };
+
     return(
-        <View style={{flex:1}}>
+        <View style={styles.container}>
             {/* Header */}
-            <ImageBackground source={require('../assets/Home.jpg')} style={{paddingTop: 20, paddingBottom: 5}}>
-            
-            {/* circular Profile Picture _starts */}
-            <View style={{justifyContent:'center', alignItems: 'center'}}>
-                <View style={{borderColor: '#fff', borderWidth: 0, borderRadius: 43}}>
-                    <Image source={require('../assets/common.jpg')} style={{Width: 80, height: 100, borderRadius: 30}} />
+            <View style={user?.photoURL ? styles.profilePictureContainer : styles.defaultPictureContainer}>
+                <View style={styles.profilePictureView}>
+                    <Image source={user?.photoURL ? {uri: user.photoURL} : require('../assets/logo.png')} style={styles.profilePicture} />
                 </View>
             </View>
-            {/* circular Profile Picture _ends */}
-            <View style={{justifyContent: 'center', alignItems: 'center', paddingTop: 10}}>
-                <Text style={{fontSize: 14, color: '#000000',}}>USER</Text>
+
+            <View style={styles.profileTextView}>
+                <Text style={styles.profileText}>{user?.displayName || '비회원'}</Text>
             </View>
-            
-            </ImageBackground>
+
+            {/* 로그인한 경우에만 이메일 표시 */}
+            {user?.email && (
+                <View style={styles.profileTextView}>
+                    <Text style={styles.profileText}>{user.email}</Text>
+                </View>
+            )}
 
             {/* The navigation  */}
-           <DrawerContentScrollView {...props}>
-            <DrawerItemList {...props} />
-           </DrawerContentScrollView>
+            <DrawerContentScrollView {...props}>
+                <DrawerItemList {...props} />
+            </DrawerContentScrollView>
 
             {/* Footer */}
-           <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#cccccc'}}>
+            <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#cccccc'}}>
 
-           <View style={{flexDirection: 'row', alignItems: 'center', paddingVertical: 15}}>
-            <Ionicons name="share-social-outline" size={22} color="#d2066c"/>
-            <Text style={{color: '#d2066c', fontSize: 15, marginLeft: 5}}>공유하기</Text>
-           </View>
+                <View style={{flexDirection: 'row', alignItems: 'center', paddingVertical: 15}}>
+                    <Text style={{color: '#d2066c', fontSize: 15, marginLeft: 5}}>공유하기</Text>
+                </View>
 
 
-           <View style={{flexDirection: 'row', alignItems: 'center',  paddingVertical: 15}}>
-            <Ionicons name="share-social-outline" size={22} color="#d2066c"/>
-            <Text style={{color: '#d2066c', fontSize: 15, marginLeft: 5}}>Sing Out</Text>
-           </View>
-        </View>
+                {user && (
+                    <View style={{flexDirection: 'row', alignItems: 'center', paddingVertical: 15}}>
+                        <Text 
+                            onPress={handleLogoutPress}
+                            style={{color: '#d2066c', fontSize: 15, marginLeft: 5}}
+                        >
+                            로그아웃
+                        </Text>
+                    </View>
+                )}
+
+            </View>
         </View>
     );
 }
