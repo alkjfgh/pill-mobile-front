@@ -9,6 +9,9 @@ const HistoryScreen = () => {
   const [selectedRecord, setSelectedRecord] = useState(null); // 선택된 기록
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
   const { user } = useGetGoogleAuth(); // 로그인 상태 가져오기
+  
+  console.log("useGetGoogleAuth 반환값:", { user });
+
   // console.log("rescods" + user.email);
   // 서버에서 기록 데이터 가져오기
   const fetchRecordsFromServer = async () => {
@@ -40,6 +43,7 @@ const HistoryScreen = () => {
       const formattedRecords = logs.map(record => ({
         email: record.email,
         image: record.image,
+        imageUrl: `http://1.209.148.143:8883/api/logs/image/${record.image}`,
         result: record.result,
         // date: new Date(record.date).toLocaleString(), // 날짜 포맷 변경
         date: record.date,
@@ -56,8 +60,15 @@ const HistoryScreen = () => {
 
   // 화면 로드 시 서버 데이터 가져오기
   useEffect(() => {
+    console.log("user : " + user);
+    
+    if (!user || !user.email) {
+      console.log("사용자 정보가 없습니다.");
+      setIsLoading(false); // 로딩 상태 해제
+      return;
+    }
     fetchRecordsFromServer();
-  }, []);
+  }, [user]);
 
   return (
     <View style={styles.container}>
@@ -76,8 +87,11 @@ const HistoryScreen = () => {
             >
               <Text style={styles.recordDate}>날짜 : {item.date}</Text>
               <View style={styles.recordContent}>
-                <Text style={styles.recordImage}>{item.image}</Text>
-                {/* <Image source={{ uri: item.image }} style={styles.recordImage} /> */}
+                {/* <Text style={styles.recordImage}>{item.image}</Text> */}
+                <Image 
+                  source={{ uri: item.imageUrl }} 
+                  style={styles.recordImage}
+                  resizeMode="contain" />
                 <View style={styles.recordDetails}>
                   <Text style={styles.recordText}>
                     결과 : {item.result.length > 15 ? `${item.result.slice(0, 15)}...` : item.result}
@@ -95,7 +109,11 @@ const HistoryScreen = () => {
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalDate}>날짜 : {selectedRecord.date}</Text>
-              <Image source={{ uri: selectedRecord.image }} style={styles.modalImage} />
+              <Image 
+                source={{ uri: selectedRecord.imageUrl }} 
+                style={styles.modalImage} 
+                resizeMode="contain"
+              />
               <Text style={styles.modalText}>결과: {selectedRecord.result}</Text>
               <Button title="닫기" onPress={() => setSelectedRecord(null)} />
             </View>
