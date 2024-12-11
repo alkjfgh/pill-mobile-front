@@ -17,11 +17,17 @@ export const RecordProvider = ({ children }) => {
       });
 
       if (!res.ok) {
+        if (res.status === 500) {
+          // 로그가 없는 경우 빈 배열로 처리
+          setRecords([]);
+          return;
+        }
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
       const fetchedRecords = await res.json();
-      const logs = fetchedRecords.logs.map((record) => ({
+      // logs가 없거나 빈 배열인 경우 처리
+      const logs = (fetchedRecords.logs || []).map((record) => ({
         email: record.email,
         image: record.image,
         imageUrl: `http://1.209.148.143:8883/api/logs/image/${record.image}`,
@@ -32,6 +38,7 @@ export const RecordProvider = ({ children }) => {
       setRecords(logs);
     } catch (error) {
       console.error("Error fetching records:", error.message);
+      setRecords([]);
     }
   };
 

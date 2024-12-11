@@ -5,19 +5,14 @@ const { width } = Dimensions.get('window');
 const SearchStyle = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#fff",
     backgroundColor: "#f8f9fa",
     alignItems: "center",
-    // justifyContent: "center",
     padding: 20,
   },
   resultContainer: {
     marginTop: 20,
     alignItems: "center",
     backgroundColor: "#ffffff",
-    // padding: 10,
-    // borderRadius: 8,
-    // width: "100%",
     padding: 20,
     borderRadius: 15,
     width: width - 40,
@@ -31,17 +26,12 @@ const SearchStyle = StyleSheet.create({
     elevation: 5,
   },
   resultLabel: {
-    // fontSize: 18,
-    // fontWeight: "bold",
-    // marginBottom: 5,
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
     color: "#1a1a1a",
   },
   resultText: {
-    // fontSize: 16,
-    // color: "#333",
     fontSize: 18,
     color: "#4a4a4a",
     marginBottom: 15,
