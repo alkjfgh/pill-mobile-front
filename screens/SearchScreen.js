@@ -68,11 +68,23 @@ const SearchScreen = () => {
         Alert.alert(
           "네트워크 오류",
           "다시 한 번 검색 버튼을 눌러주세요.",
-          [{ text: "확인" }]
+          [{ text: "확인" }],
+          { 
+            cancelable: true,
+            onDismiss: () => console.log('Alert dismissed')
+          }
         );
       } else {
         console.error("Error sending images[search]:", error.message);
-        Alert.alert("에러", "이미지 전송 중 오류가 발생했습니다.");
+        Alert.alert(
+          "에러", 
+          "이미지 전송 중 오류가 발생했습니다.",
+          [{ text: "확인" }],
+          { 
+            cancelable: true,
+            onDismiss: () => console.log('Alert dismissed')
+          }
+        );
       }
     } finally {
       setIsLoadingResult(false); // 분석 결과 로딩 종료
@@ -127,18 +139,38 @@ const SearchScreen = () => {
         refreshRecords.current(user.email); // Refresh records after saving
       }
 
-      Alert.alert("저장 완료", "기록이 서버에 저장되었습니다!");
+      Alert.alert(
+        "저장 완료", 
+        "기록이 서버에 저장되었습니다!",
+        [{ text: "확인" }],
+        { 
+          cancelable: true,
+          onDismiss: () => console.log('Alert dismissed')
+        }
+      );
     } catch (error) {
       console.log("Error saving record to server:", error.message);
       if (error.message === "Network request failed") {
         Alert.alert(
           "네트워크 오류",
           "다시 한 번 기록 저장 버튼을 눌러주세요.",
-          [{ text: "확인" }]
+          [{ text: "확인" }],
+          { 
+            cancelable: true,
+            onDismiss: () => console.log('Alert dismissed')
+          }
         );
       } else {
         console.error("Error saving record to server:", error.message);
-        Alert.alert("저장 실패", "서버에 기록을 저장하는 중 오류가 발생했습니다.");
+        Alert.alert(
+          "저장 실패", 
+          "서버에 기록을 저장하는 중 오류가 발생했습니다.",
+          [{ text: "확인" }],
+          { 
+            cancelable: true,
+            onDismiss: () => console.log('Alert dismissed')
+          }
+        );
       }
     } finally {
       setIsSaving(false); // 저장 로딩 종료
@@ -171,7 +203,15 @@ const SearchScreen = () => {
           if (pillImage) {
             sendPillImageToServer(pillImage);
           } else {
-            Alert.alert("경고", "이미지를 선택해주세요!");
+            Alert.alert(
+              "경고", 
+              "이미지를 선택해주세요!", 
+              [{ text: "확인" }],
+              { 
+                cancelable: true,
+                onDismiss: () => console.log('Alert dismissed')
+              }
+            );
           }
         }}
         style={styles.searchButton}
@@ -194,7 +234,15 @@ const SearchScreen = () => {
                 style={[styles.searchButton, { backgroundColor: '#2ecc71' }]}
                   onPress={async () => {
                     if (!result) {
-                      Alert.alert("경고", "검색 결과가 없습니다!");
+                      Alert.alert(
+                        "경고", 
+                        "검색 결과가 없습니다!",
+                        [{ text: "확인" }],
+                        { 
+                          cancelable: true,
+                          onDismiss: () => console.log('Alert dismissed')
+                        }
+                      );
                       return;
                     }
 
@@ -210,7 +258,11 @@ const SearchScreen = () => {
                               returnScreen: "검색"
                             }),
                           },
-                        ]
+                        ],
+                        { 
+                          cancelable: true,
+                          onDismiss: () => console.log('Alert dismissed')
+                        }
                       );
                       return;
                     }

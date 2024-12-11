@@ -11,7 +11,15 @@ const Photo = ({ label, onSelect }) => {
     // 카메라 권한 요청
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      alert("갤러리 및 카메라 접근 권한이 필요합니다.");
+      Alert.alert(
+        "권한 필요",
+        "갤러리 및 카메라 접근 권한이 필요합니다.",
+        [{ text: "확인" }],
+        {
+          cancelable: true,
+          onDismiss: () => console.log('Alert dismissed')
+        }
+      );
       return;
     }
 
@@ -56,7 +64,11 @@ const Photo = ({ label, onSelect }) => {
           text: "취소",
           style: "cancel",
         },
-      ]
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => console.log('Alert dismissed')
+      }
     );
   };
 
