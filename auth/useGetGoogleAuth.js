@@ -120,6 +120,7 @@ const useGetGoogleAuth = () => {
     }
   };
 
+  // 로그인
   const signIn = async (user) => {
     try {
       const payload = {
@@ -162,11 +163,46 @@ const useGetGoogleAuth = () => {
     }
   };
 
+  // 탈퇴 기능
+  const handleDeleteAccount = async () => {
+    try{
+      if(!user || !user.email){
+        throw new Error("사용자 정보가 없습니다.");
+      }
+
+      // 서버에서 사용자 정보 삭제
+      const res = await fetch(`http://1.209.148.143:8883/api/users/${user.email}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if(!res.ok){
+        throw new Error(`HTTP error! status[deleteAccount]: ${res.status}`);
+      }
+
+      // Firebase에서 사용자 삭제
+      await user.delete();
+
+      // 로컬 스토리지 정보 삭제 및 상태 초기화
+      await AsyncStorage.removeItem("@user");
+      setUser(null);
+
+      const data = await res.json();
+      console.log("Response Data[deleteAccount]:", data);
+      console.log("회원 탈퇴 완료");
+    } catch(error){
+      console.error("탈퇴 처리 중 오류 발생:",error);
+      alert("탈퇴 처리 중 오류가 발생했습니다.");
+    }
+  }
+
   useEffect(() => {
     console.log("User:", user);
   }, [user]);
 
-  return { user, request, promptAsync, handleLogout, status }; // 필요한 값과 함수 반환
+  return { user, request, promptAsync, handleLogout, handleDeleteAccount }; // 필요한 값과 함수 반환
 };
 
 export default useGetGoogleAuth;
