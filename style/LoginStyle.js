@@ -45,7 +45,7 @@ const LoginStyle = StyleSheet.create({
   welcomeText: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 5,
     color: "#333333",
     letterSpacing: 1,
   },
