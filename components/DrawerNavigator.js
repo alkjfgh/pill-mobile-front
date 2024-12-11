@@ -12,30 +12,28 @@ import useGetGoogleAuth from "../auth/useGetGoogleAuth";
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator = () => {
+const DrawerNavigator = ({ navigation, route }) => {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const { user } = useGetGoogleAuth();
+  const [alertShown, setAlertShown] = useState(false);
 
   useEffect(() => {
     console.log("현재 로그인 사용자:", user);
+    if(user){
+      setAlertShown(false);
+    }
   }, [user]);
 
-  // const handleHistoryAccess = ({ navigation }) => {
-  //   if (!user) {
-  //     Alert.alert(
-  //       "로그인 필요",
-  //       "기록 화면은 로그인 후 이용 가능합니다.",
-  //       [
-  //         {
-  //           text: "확인",
-  //           onPress: () => navigation.navigate("LoginScreen"), // 로그인 화면으로 이동
-  //         },
-  //       ]
-  //     );
-  //     return null; // 화면 렌더링하지 않음
-  //   }
-  //   return <HistoryScreen />; // user가 있는 경우 기록 화면 렌더링
-  // };
+  // 로그인 화면에서 뒤로가기 했을 때 alertShown 리셋
+  useEffect(() => {
+    console.log("route?.params?.resetAlert", route?.params?.resetAlert);
+    if (route?.params?.resetAlert) {
+      setAlertShown(false);
+      navigation.setParams({
+        resetAlert: undefined
+      });
+    }
+  }, [route?.params?.resetAlert]);
 
   return(
     <Drawer.Navigator
@@ -81,14 +79,18 @@ const DrawerNavigator = () => {
             options={{ headerShown: true }}
             listeners={({ navigation }) => ({
               focus: () => {
-                if (!user) {
+                if (!user && !alertShown) {
+                  setAlertShown(true);
                   Alert.alert(
                     "로그인 필요",
                     "기록 화면은 로그인 후 이용 가능합니다.",
                     [
                       {
                         text: "확인",
-                        onPress: () => navigation.navigate("LoginScreen"),
+                        onPress: () => navigation.navigate("계정", { 
+                          fromAlert: true,
+                          returnScreen: "검색"  // 돌아갈 화면 정보 추가
+                        }),
                       },
                     ]
                   );
@@ -97,7 +99,6 @@ const DrawerNavigator = () => {
             })}
             component={HistoryScreen}
           />
-          <Drawer.Screen name="LoginScreen" component={LoginScreen} />
         </>
       )}
     </Drawer.Navigator>
