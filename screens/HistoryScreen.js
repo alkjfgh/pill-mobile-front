@@ -12,11 +12,11 @@ const HistoryScreen = () => {
   // console.log("rescods" + user.email);
   // 서버에서 기록 데이터 가져오기
   const fetchRecordsFromServer = async () => {
-    if (!user || !user.email) {
-      console.log("사용자 정보가 없습니다.");
-      setIsLoading(false); // 로딩 상태 해제
-      return;
-    }
+    // if (!user || !user.email) {
+    //   console.log("사용자 정보가 없습니다.");
+    //   setIsLoading(false); // 로딩 상태 해제
+    //   return;
+    // }
     console.log("email : " + user.email);
     
     try {

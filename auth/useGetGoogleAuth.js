@@ -159,6 +159,10 @@ const useGetGoogleAuth = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("User:", user);
+  }, [user]);
+
   return { user, request, promptAsync, handleLogout, status }; // 필요한 값과 함수 반환
 };
 
