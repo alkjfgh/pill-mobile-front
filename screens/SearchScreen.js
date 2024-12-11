@@ -165,12 +165,6 @@ const SearchScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.manualButton}
-        onPress={() => setShowManual(true)}
-      >
-        <Text style={styles.manualButtonText}>사용 설명서</Text>
-      </TouchableOpacity>
       <Photo label="알약 이미지" onSelect={(uri) => setPillImage(uri)} />
       <TouchableOpacity
         onPress={() => {
