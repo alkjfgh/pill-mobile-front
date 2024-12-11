@@ -1,7 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, Text, View } from 'react-native';
 import styles from "./style/AppStyle";
-import MainScreen from './screens/MainScreen';
 import SplashScreenComponent from './components/SplashScreenComponent';
 import { RecordProvider } from "./context/RecordContext";
 import 'react-native-gesture-handler';
@@ -14,6 +13,7 @@ import SearchScreen from "./screens/SearchScreen";
 import HistoryScreen from "./screens/HistoryScreen";
 import MyCustomDrawer from "./components/MyCustomDrawer";
 import OnboardingScreen from "./screens/OnboardingScreen";
+import SettingScreen from './screens/SettingScreen';
 import { useEffect, useState } from 'react';
 
 const Drawer = createDrawerNavigator();
@@ -65,7 +65,14 @@ export default function App() {
                 <Drawer.Screen name="검색" component={SearchScreen} />
                 <Drawer.Screen name="기록" component={HistoryScreen} />
                 <Drawer.Screen name="LoginScreen" component={LoginScreen} />
-                <Drawer.Screen name="MainScreen" component={MainScreen} />
+                <Drawer.Screen 
+                  name="SettingScreen" 
+                  component={SettingScreen} 
+                  options={{ 
+                    drawerItemStyle: { display: 'none' },  // 드로어 메뉴에서 숨김
+                    title: "설정"  // 헤더 타이틀
+                  }} 
+                />
               </>
             )}
           </Drawer.Navigator>

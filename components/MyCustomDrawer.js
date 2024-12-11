@@ -1,13 +1,14 @@
 import React from "react";
 import { Text, View, Image, Alert, DevSettings } from "react-native";
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
-// import * as Updates from 'expo-updates';
 import styles from "../style/MyCustomDrawerStyle";
 import useGetGoogleAuth from "../auth/useGetGoogleAuth";
 // import { Ionicons } from '@expo/vector-icons';
+import SettingScreen from './../screens/SettingScreen';
 
 const MyCustomDrawer = props => {
     const { user, handleLogout } = useGetGoogleAuth();
+    const navigation = props.navigation;
 
     const handleLogoutPress = () => {
         Alert.alert(
@@ -59,7 +60,7 @@ const MyCustomDrawer = props => {
             <View style={{padding: 20, borderTopWidth: 1, borderTopColor: '#cccccc'}}>
 
                 <View style={{flexDirection: 'row', alignItems: 'center', paddingVertical: 15}}>
-                    <Text style={{color: '#d2066c', fontSize: 15, marginLeft: 5}}>공유하기</Text>
+                    <Text onPress={() => navigation.navigate('SettingScreen')} style={{color: '#d2066c', fontSize: 15, marginLeft: 5}}>설정</Text>
                 </View>
 
 

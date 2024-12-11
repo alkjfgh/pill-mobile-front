@@ -41,7 +41,8 @@ const HistoryScreen = () => {
         email: record.email,
         image: record.image,
         result: record.result,
-        date: new Date(record.date).toLocaleString(), // 날짜 포맷 변경
+        // date: new Date(record.date).toLocaleString(), // 날짜 포맷 변경
+        date: record.date,
       }));
 
       setRecords(formattedRecords); // 컨텍스트에 저장

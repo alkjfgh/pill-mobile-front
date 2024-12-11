@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { signInWithCredential, GoogleAuthProvider, signOut, onAuthStateChanged } from "firebase/auth";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { auth } from "../firebaseConfig";
+import { RecordContext } from "../context/RecordContext";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const useGetGoogleAuth = () => {
   const [user, setUser] = useState(null);
   const [status, setStatus] = useState(null);
+  // const { clearRecords, records } = useContext(RecordContext);
 
   // Google 인증 요청 초기화
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
@@ -153,6 +155,7 @@ const useGetGoogleAuth = () => {
       await signOut(auth); // Firebase에서 로그아웃
       await AsyncStorage.removeItem("@user"); // AsyncStorage에서 사용자 정보 제거
       setUser(null); // 사용자 상태 초기화
+      // clearRecords();
       console.log("User signed out.");
     } catch (error) {
       console.error("Error during sign out:", error);
