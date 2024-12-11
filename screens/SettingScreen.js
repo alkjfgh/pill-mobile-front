@@ -4,7 +4,7 @@ import styles from "../style/SettingStyle";
 const SettingScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>Setting</Text>
+      <Text style={styles.listName}>계정</Text>
     </View>
   );
 };
