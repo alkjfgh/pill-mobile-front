@@ -6,11 +6,6 @@ const HistoryStyle = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
   recordItem: {
     marginBottom: 10,
     padding: 10,
