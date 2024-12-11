@@ -1,7 +1,7 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useEffect, useState } from "react";
 import 'react-native-gesture-handler';
-import { Alert } from "react-native";
+import { Alert, Image, TouchableOpacity } from "react-native";
 
 import LoginScreen from "../screens/LoginScreen";
 import SearchScreen from "../screens/SearchScreen";
@@ -39,7 +39,7 @@ const DrawerNavigator = ({ navigation, route }) => {
     <Drawer.Navigator
       drawerContent={props => <MyCustomDrawer {...props} />}
       initialRouteName={showOnboarding ? "OnboardingScreen" : "검색"}
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         drawerActiveBackgroundColor: '#E2E2E2',
         drawerActiveTintColor: 'black',
         drawerInactiveTintColor: '#333333',
@@ -50,6 +50,18 @@ const DrawerNavigator = ({ navigation, route }) => {
         },
         headerTintColor: 'black',
         headerTitleAlign: 'center',
+        // 커스텀 메뉴 아이콘 추가
+        headerLeft: () => (
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer()}
+            style={{ marginLeft: 16 }}
+          >
+            <Image 
+              source={require('../assets/menu.png')} 
+              style={{ width: 30, height: 30 }}  // 이미지 크기는 필요에 따라 조절하세요
+            />
+          </TouchableOpacity>
+        ),
         drawerStyle: {
           width: '75%',    // 드로어 너비
         },
@@ -58,7 +70,7 @@ const DrawerNavigator = ({ navigation, route }) => {
           borderRadius: 10,  // 드로어 아이템의 모서리를 각지게
         },
         swipeEnabled: !showOnboarding  // 온보딩 화면일 때는 스와이프 비활성화
-      }}
+      })}
     >
       {showOnboarding ? (
         <Drawer.Screen 
@@ -77,7 +89,7 @@ const DrawerNavigator = ({ navigation, route }) => {
           <Drawer.Screen name="검색" component={SearchScreen} />
           <Drawer.Screen
             name="기록"
-            options={{ headerShown: true }}
+            options={{headerShown: true}}
             listeners={({ navigation }) => ({
               focus: () => {
                 if (!user && !alertShown) {
