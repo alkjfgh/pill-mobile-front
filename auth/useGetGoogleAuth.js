@@ -41,15 +41,18 @@ const useGetGoogleAuth = () => {
 
   // Google 로그인 처리
   useEffect(() => {
-    if (response?.type === "success") {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
+    const handleResponse = async () => {
+      if (response?.type === "success") {
+        const { id_token } = response.params;
+        const credential = GoogleAuthProvider.credential(id_token);
 
-      signInWithCredential(auth, credential)
-        .then((userCredential) => {
+        try{
+          const userCredential = await signInWithCredential(auth, credential);
           const user = userCredential.user; // 사용자 정보 가져오기
           
-          const status = userCheck(user.email);
+          const status = await userCheck(user.email);
+          console.log("Status:", status);
+
           if(status == 404){
             signUp(user);
           }
@@ -59,13 +62,16 @@ const useGetGoogleAuth = () => {
           else if(status == 500){
             alert("서버 에러");
           }
+
           console.log("User Info:", user);
           setUser(user); // 사용자 상태 업데이트
-        })
-        .catch((error) => {
+        } catch(error){
           console.error("Error during signInWithCredential:", error);
-        });
-    }
+        }
+      }
+    };
+
+    handleResponse();
   }, [response]);
 
   // db에 유저있는지 체크
@@ -77,6 +83,16 @@ const useGetGoogleAuth = () => {
           "Content-Type": "application/json",
         },
       });
+
+      if (res.status === 404) {
+        console.log("User not found, status 404");
+        return 404;  // 404 상태 코드 반환
+      }
+
+      if (res.status === 500) {
+        console.log("Internal Server, status 404");
+        return 500;  // 500 상태 코드 반환
+      }
 
       if (!res.ok) {
         throw new Error(`HTTP error! status[userCheck]: ${res.status}`);
