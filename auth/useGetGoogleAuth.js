@@ -162,11 +162,9 @@ const useGetGoogleAuth = () => {
     }
   };
 
-  // user 상태 변화 감지를 위한 useEffect 추가
-  // useEffect(() => {
-  //   console.log("Current user state:", user);
-  //   console.log("records : " + records);
-  // }, [user]);
+  useEffect(() => {
+    console.log("User:", user);
+  }, [user]);
 
   return { user, request, promptAsync, handleLogout, status }; // 필요한 값과 함수 반환
 };
