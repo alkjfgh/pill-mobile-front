@@ -1,4 +1,4 @@
-import { View, Text, Button, Alert, ActivityIndicator, Modal } from "react-native";
+import { View, Text, Button, Alert, ActivityIndicator, Modal, TouchableOpacity } from "react-native";
 import styles from "../style/SearchStyle";
 import Photo from "../components/Photo";
 import { useState, useContext } from "react";
@@ -144,8 +144,7 @@ const SearchScreen = () => {
   return (
     <View style={styles.container}>
       <Photo label="알약 이미지" onSelect={(uri) => setPillImage(uri)} />
-      <Button
-        title="검색"
+      <TouchableOpacity
         onPress={() => {
           if (pillImage) {
             sendPillImageToServer(pillImage);
@@ -153,74 +152,80 @@ const SearchScreen = () => {
             Alert.alert("경고", "이미지를 선택해주세요!");
           }
         }}
-      />
+        style={styles.searchButton}
+      >
+        <Text style={styles.searchButtonText}>검색</Text>
+      </TouchableOpacity>
 
       {/* 서버 결과 표시 */}
-      <View style={styles.resultContainer}>
-        {isLoadingResult ? (
-          // 분석 결과 로딩 인디케이터
-          <ActivityIndicator size="large" color="#0000ff" style={styles.resultLoading} />
-        ) : (
-          result && (
-            <>
-              <Text style={styles.resultLabel}>분석 결과</Text>
-              <Text style={styles.resultText}>{result}</Text>
-              <Button
-                title="기록 저장"
-                onPress={async () => {
-                  if (!result) {
-                    Alert.alert("경고", "검색 결과가 없습니다!");
-                    return;
-                  }
+      {(isLoadingResult || result) && (
+        <View style={styles.resultContainer}>
+          {isLoadingResult ? (
+            // 분석 결과 로딩 인디케이터
+            <ActivityIndicator size="large" color="#4a90e2" style={styles.resultLoading} />
+          ) : (
+            result && (
+              <>
+                <Text style={styles.resultLabel}>분석 결과</Text>
+                <Text style={styles.resultText}>{result}</Text>
+                <TouchableOpacity
+                style={[styles.searchButton, { backgroundColor: '#2ecc71' }]}
+                  onPress={async () => {
+                    if (!result) {
+                      Alert.alert("경고", "검색 결과가 없습니다!");
+                      return;
+                    }
 
-                  if (!user) {
-                    Alert.alert(
-                      "로그인 필요",
-                      "로그인 시 이용 가능합니다!",
-                      [
-                        {
-                          text: "확인",
-                          onPress: () => navigation.navigate("계정", { 
-                            fromAlert: true,
-                            returnScreen: "검색"
-                          }),
-                        },
-                      ]
-                    );
-                    return;
-                  }
+                    if (!user) {
+                      Alert.alert(
+                        "로그인 필요",
+                        "로그인 시 이용 가능합니다!",
+                        [
+                          {
+                            text: "확인",
+                            onPress: () => navigation.navigate("계정", { 
+                              fromAlert: true,
+                              returnScreen: "검색"
+                            }),
+                          },
+                        ]
+                      );
+                      return;
+                    }
 
-                  const now = new Date();
-                  const formattedDate = `${now.getFullYear()}-${String(
-                    now.getMonth() + 1
-                  ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(
-                    now.getHours()
-                  ).padStart(2, "0")}:${String(now.getMinutes()).padStart(
-                    2,
-                    "0"
-                  )}:${String(now.getSeconds()).padStart(2, "0")}`;
+                    const now = new Date();
+                    const formattedDate = `${now.getFullYear()}-${String(
+                      now.getMonth() + 1
+                    ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(
+                      now.getHours()
+                    ).padStart(2, "0")}:${String(now.getMinutes()).padStart(
+                      2,
+                      "0"
+                    )}:${String(now.getSeconds()).padStart(2, "0")}`;
 
-                  const newRecord = {
-                    date: formattedDate,
-                    image: pillImage,
-                    result,
-                    email: user.email,
-                  };
+                    const newRecord = {
+                      date: formattedDate,
+                      image: pillImage,
+                      result,
+                      email: user.email,
+                    };
 
-                  await saveToServer(newRecord);
-                }}
-              />
-            </>
-          )
-        )}
-      </View>
+                    await saveToServer(newRecord);
+                  }}
+                >
+                  <Text style={styles.searchButtonText}>기록 저장</Text>
+                </TouchableOpacity>
+              </>
+            )
+          )}
+        </View>
+      )}
 
       {/* 기록 저장 중 로딩 모달 */}
       {isSaving && (
         <Modal transparent={true} animationType="fade">
           <View style={styles.modalContainer}>
             <ActivityIndicator size="large" color="#0000ff" />
-            <Text style={styles.modalText}>저장 중...</Text>
           </View>
         </Modal>
       )}
