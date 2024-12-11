@@ -1,5 +1,5 @@
 import { View, Text, Button, SafeAreaView } from "react-native";
-import styles from "../style/MainStyle";
+import styles from "../style/SettingStyle";
 
 const SettingScreen = () => {
   return (

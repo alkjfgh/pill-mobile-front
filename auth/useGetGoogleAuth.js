@@ -41,15 +41,18 @@ const useGetGoogleAuth = () => {
 
   // Google 로그인 처리
   useEffect(() => {
-    if (response?.type === "success") {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
+    const handleResponse = async () => {
+      if (response?.type === "success") {
+        const { id_token } = response.params;
+        const credential = GoogleAuthProvider.credential(id_token);
 
-      signInWithCredential(auth, credential)
-        .then((userCredential) => {
+        try{
+          const userCredential = await signInWithCredential(auth, credential);
           const user = userCredential.user; // 사용자 정보 가져오기
           
-          const status = userCheck(user.email);
+          const status = await userCheck(user.email);
+          console.log("Status:", status);
+
           if(status == 404){
             signUp(user);
           }
@@ -59,13 +62,16 @@ const useGetGoogleAuth = () => {
           else if(status == 500){
             alert("서버 에러");
           }
+
           console.log("User Info:", user);
           setUser(user); // 사용자 상태 업데이트
-        })
-        .catch((error) => {
+        } catch(error){
           console.error("Error during signInWithCredential:", error);
-        });
-    }
+        }
+      }
+    };
+
+    handleResponse();
   }, [response]);
 
   // db에 유저있는지 체크
@@ -77,6 +83,16 @@ const useGetGoogleAuth = () => {
           "Content-Type": "application/json",
         },
       });
+
+      if (res.status === 404) {
+        console.log("User not found, status 404");
+        return 404;  // 404 상태 코드 반환
+      }
+
+      if (res.status === 500) {
+        console.log("Internal Server, status 404");
+        return 500;  // 500 상태 코드 반환
+      }
 
       if (!res.ok) {
         throw new Error(`HTTP error! status[userCheck]: ${res.status}`);
@@ -120,6 +136,7 @@ const useGetGoogleAuth = () => {
     }
   };
 
+  // 로그인
   const signIn = async (user) => {
     try {
       const payload = {
@@ -162,11 +179,46 @@ const useGetGoogleAuth = () => {
     }
   };
 
+  // 탈퇴 기능
+  const handleDeleteAccount = async () => {
+    try{
+      if(!user || !user.email){
+        throw new Error("사용자 정보가 없습니다.");
+      }
+
+      // 서버에서 사용자 정보 삭제
+      const res = await fetch(`http://1.209.148.143:8883/api/users/${user.email}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if(!res.ok){
+        throw new Error(`HTTP error! status[deleteAccount]: ${res.status}`);
+      }
+
+      // Firebase에서 사용자 삭제
+      await user.delete();
+
+      // 로컬 스토리지 정보 삭제 및 상태 초기화
+      await AsyncStorage.removeItem("@user");
+      setUser(null);
+
+      const data = await res.json();
+      console.log("Response Data[deleteAccount]:", data);
+      console.log("회원 탈퇴 완료");
+    } catch(error){
+      console.error("탈퇴 처리 중 오류 발생:",error);
+      alert("탈퇴 처리 중 오류가 발생했습니다.");
+    }
+  }
+
   useEffect(() => {
     console.log("User:", user);
   }, [user]);
 
-  return { user, request, promptAsync, handleLogout, status }; // 필요한 값과 함수 반환
+  return { user, request, promptAsync, handleLogout, handleDeleteAccount }; // 필요한 값과 함수 반환
 };
 
 export default useGetGoogleAuth;
