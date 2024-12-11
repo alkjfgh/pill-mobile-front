@@ -56,7 +56,8 @@ const DrawerNavigator = ({ navigation, route }) => {
         overlayColor: 'rgba(0,0,0,0.3)',
         drawerItemStyle: {
           borderRadius: 10,  // 드로어 아이템의 모서리를 각지게
-        }
+        },
+        swipeEnabled: !showOnboarding  // 온보딩 화면일 때는 스와이프 비활성화
       }}
     >
       {showOnboarding ? (
