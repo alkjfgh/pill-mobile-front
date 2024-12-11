@@ -69,6 +69,11 @@ const HistoryStyle = StyleSheet.create({
     color: "#333",
     marginBottom: 5,
   },
+  loadingSpinner: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default HistoryStyle;
