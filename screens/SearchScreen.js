@@ -123,8 +123,17 @@ const SearchScreen = () => {
 
       Alert.alert("저장 완료", "기록이 서버에 저장되었습니다!");
     } catch (error) {
-      console.error("Error saving record to server:", error.message);
-      Alert.alert("저장 실패", "서버에 기록을 저장하는 중 오류가 발생했습니다.");
+      console.log("Error saving record to server:", error.message);
+      if (error.message === "Network request failed") {
+        Alert.alert(
+          "네트워크 오류",
+          "다시 한 번 기록 저장 버튼을 눌러주세요.",
+          [{ text: "확인" }]
+        );
+      } else {
+        console.error("Error saving record to server:", error.message);
+        Alert.alert("저장 실패", "서버에 기록을 저장하는 중 오류가 발생했습니다.");
+      }
     } finally {
       setIsSaving(false); // 저장 로딩 종료
     }
