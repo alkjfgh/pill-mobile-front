@@ -35,7 +35,7 @@ const LoginScreen = () => {
           <Image source={{ uri: user.photoURL }} style={styles.userPhoto} />
           <Text>Welcome222, {user.displayName}!</Text>
           <Text>Email: {user.email}</Text>
-          <Button title="Logout" onPress={handleLogout} />
+          {/* <Button title="Logout" onPress={handleLogout} /> */}
           <Button title="계정 탈퇴" onPress={confirmDelete} color="#FF0000" />
         </View>
       ) : (
