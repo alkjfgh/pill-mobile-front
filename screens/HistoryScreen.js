@@ -12,6 +12,11 @@ const HistoryScreen = () => {
   
   console.log("useGetGoogleAuth 반환값:", { user });
 
+  // 정렬된 기록을 반환하는 함수
+  const sortedRecords = [...records].sort((a, b) => {
+    return new Date(b.date) - new Date(a.date);
+  });
+
   // 화면 로드 시 서버 데이터 가져오기
   useEffect(() => {
     console.log("user : " + user);
@@ -28,13 +33,11 @@ const HistoryScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>검색 기록</Text>
-      
       {isLoading ? (
         <ActivityIndicator size="large" color="#0000ff" style={styles.loadingSpinner} />
       ) : (
         <FlatList
-          data={records}
+          data={sortedRecords}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity
