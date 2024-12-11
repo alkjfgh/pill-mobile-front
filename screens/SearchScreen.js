@@ -1,10 +1,13 @@
 import { View, Text, Button, Alert, ActivityIndicator, Modal, TouchableOpacity } from "react-native";
+import { useState, useContext, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+
 import styles from "../style/SearchStyle";
 import Photo from "../components/Photo";
-import { useState, useContext } from "react";
 import { RecordContext } from "../context/RecordContext";
 import useGetGoogleAuth from "../auth/useGetGoogleAuth"; // Google 인증 상태 가져오기
-import { useNavigation } from "@react-navigation/native";
+import Manual from "../components/Manual";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SearchScreen = () => {
   const { refreshRecords } = useContext(RecordContext); // 기록 추가 함수 가져오기
@@ -13,6 +16,7 @@ const SearchScreen = () => {
   const [result, setResult] = useState(null); // 서버에서 가져온 결과
   const [isLoadingResult, setIsLoadingResult] = useState(false); // 분석 로딩 상태
   const [isSaving, setIsSaving] = useState(false); // 기록 저장 로딩 상태
+  const [showManual, setShowManual] = useState(false);
   const navigation = useNavigation();
 
   // 서버로 이미지 URI 전송해서 검색
@@ -141,6 +145,24 @@ const SearchScreen = () => {
     }
   };
 
+  // 처음 사용하는 사용자인지 확인
+  const checkFirstTime = async () => {
+    try {
+      const hasShownManual = await AsyncStorage.getItem('hasShownManual');
+      if (!hasShownManual) {
+        setShowManual(true);
+        await AsyncStorage.setItem('hasShownManual', 'true');
+      }
+    } catch (error) {
+      console.log('Error checking first time:', error);
+    }
+  };
+
+  // 컴포넌트 마운트 시 매뉴얼 표시 여부 확인
+  useEffect(() => {
+    checkFirstTime();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Photo label="알약 이미지" onSelect={(uri) => setPillImage(uri)} />
@@ -229,6 +251,8 @@ const SearchScreen = () => {
           </View>
         </Modal>
       )}
+
+      <Manual visible={showManual} onClose={() => setShowManual(false)} />
     </View>
   );
 };
