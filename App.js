@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DrawerNavigator from "./components/DrawerNavigator";
 import SettingScreen from './screens/SettingScreen';
 import { useEffect, useState } from 'react';
+import LoginScreen from './screens/LoginScreen';
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,11 @@ export default function App() {
               name="SettingScreen" 
               component={SettingScreen}
               options={{ title: "설정" }} 
+            />
+            <Stack.Screen 
+              name="계정" 
+              component={LoginScreen} 
+              options={{ title: "계정" }} 
             />
           </Stack.Navigator>
           <StatusBar style="auto" />

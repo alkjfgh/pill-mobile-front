@@ -3,18 +3,46 @@ import { StyleSheet } from "react-native";
 const LoginStyle = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    padding: 20,
+  },
+  loginContainer: {
+    alignItems: "center",
+    width: "100%",
   },
   loggedInContainer: {
-    alignItems: "center", // 로그인 화면 요소 가운데 정렬
+    alignItems: "center",
+    padding: 20,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 10,
+  },
+  welcomeText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "#333",
+  },
+  emailText: {
+    fontSize: 16,
+    marginBottom: 20,
+    color: "#555",
+  },
+  divider: {
+    width: "80%",
+    height: 1,
+    backgroundColor: "#ccc",
+    marginVertical: 20,
   },
   userPhoto: {
-    width: 100,   // 사진의 너비
-    height: 100,  // 사진의 높이
-    borderRadius: 50, // 사진을 원형으로 표시
-    marginBottom: 20, // 아래 요소와 간격
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
   },
 });
 
