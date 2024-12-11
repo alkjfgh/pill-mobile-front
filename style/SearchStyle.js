@@ -10,7 +10,7 @@ const SearchStyle = StyleSheet.create({
   resultContainer: {
     marginTop: 20,
     alignItems: "center",
-    backgroundColor: "#f8f8f8",
+    // backgroundColor: "#f8f8f8",
     padding: 10,
     borderRadius: 8,
     width: "100%",
@@ -28,6 +28,11 @@ const SearchStyle = StyleSheet.create({
     marginTop: 5,
     fontSize: 14,
     color: "#666",
+  },
+  loadingSpinner: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

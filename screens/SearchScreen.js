@@ -1,4 +1,4 @@
-import { View, Text, Button, Alert } from "react-native";
+import { View, Text, Button, Alert, ActivityIndicator, Modal } from "react-native";
 import styles from "../style/SearchStyle";
 import Photo from "../components/Photo";
 import { useState, useContext } from "react";
@@ -6,14 +6,18 @@ import { RecordContext } from "../context/RecordContext";
 import useGetGoogleAuth from "../auth/useGetGoogleAuth"; // Google 인증 상태 가져오기
 
 const SearchScreen = () => {
-  const { records, setRecords, refreshRecords } = useContext(RecordContext); // 기록 추가 함수 가져오기
+  const { refreshRecords } = useContext(RecordContext); // 기록 추가 함수 가져오기
   const { user } = useGetGoogleAuth(); // 로그인 상태 가져오기
   const [pillImage, setPillImage] = useState(null);
   const [result, setResult] = useState(null); // 서버에서 가져온 결과
+  const [isLoadingResult, setIsLoadingResult] = useState(false); // 분석 로딩 상태
+  const [isSaving, setIsSaving] = useState(false); // 기록 저장 로딩 상태
 
   // 서버로 이미지 URI 전송해서 검색
   const sendPillImageToServer  = async (imageUri) => {
     try {
+      setIsLoadingResult(true); // 분석 결과 로딩 시작
+
       // FormData 객체 생성
       const formData = new FormData();
 
@@ -53,14 +57,26 @@ const SearchScreen = () => {
         setResult("알약을 판별할 수 없습니다.");
       }
     } catch (error) {
-      console.error("Error sending images[search]:", error.message);
-      Alert.alert("에러", "이미지 전송 중 오류가 발생했습니다.");
+      console.log("Error sending images[search]:", error.message);
+      if (error.message === "Network request failed") {
+        Alert.alert(
+          "네트워크 오류",
+          "다시 한 번 검색 버튼을 눌러주세요.",
+          [{ text: "확인" }]
+        );
+      } else {
+        console.error("Error sending images[search]:", error.message);
+        Alert.alert("에러", "이미지 전송 중 오류가 발생했습니다.");
+      }
+    } finally {
+      setIsLoadingResult(false); // 분석 결과 로딩 종료
     }
   };
 
   // 기록 저장 (서버로 전송)
   const saveToServer = async (record) => {
     try {
+      setIsSaving(true); // 저장 로딩 시작
       const formData = new FormData();
       formData.append("date", record.date);
       formData.append("image", {
@@ -109,83 +125,81 @@ const SearchScreen = () => {
     } catch (error) {
       console.error("Error saving record to server:", error.message);
       Alert.alert("저장 실패", "서버에 기록을 저장하는 중 오류가 발생했습니다.");
+    } finally {
+      setIsSaving(false); // 저장 로딩 종료
     }
   };
-
-  // 기록 저장 (로컬 및 서버)
-  // const saveRecord = async () => {
-  //   if(!result){
-  //     Alert.alert("경고", "검색 결과가 없습니다!");
-  //     return;
-  //   }
-
-  //   if (!user) {
-  //     Alert.alert("로그인 필요", "로그인 시 이용 가능합니다!");
-  //     return;
-  //   }
-
-  //   const now = new Date();
-  //   const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
-
-  //   const newRecord = {
-  //     date: formattedDate,
-  //     image: pillImage,
-  //     result,
-  //     email: user.email,
-  //   };
-
-  //   console.log("기록 : " + newRecord.email);
-
-  //   addRecord(newRecord); // 컨텍스트에 기록 추가
-  //   Alert.alert("저장 완료", "검색 기록이 저장되었습니다.");
-  //   await saveToServer(newRecord); // 서버에 저장
-  // }
 
   return (
     <View style={styles.container}>
       <Photo label="알약 이미지" onSelect={(uri) => setPillImage(uri)} />
-      <Button title="검색" onPress={() => {
+      <Button
+        title="검색"
+        onPress={() => {
           if (pillImage) {
             sendPillImageToServer(pillImage);
           } else {
             Alert.alert("경고", "이미지를 선택해주세요!");
           }
-        }} 
+        }}
       />
 
       {/* 서버 결과 표시 */}
-      {result && (
-        <View style={styles.resultContainer}>
-          <Text style={styles.resultLabel}>분석 결과</Text>
-          <Text style={styles.resultText}>{result}</Text>
-          {/* <Button title="기록 저장" onPress={saveRecord} /> */}
-          <Button 
-            title="기록 저장" 
-            onPress={async () => {
-              if(!result){
-                Alert.alert("경고", "검색 결과가 없습니다!");
-                return;
-              }
+      <View style={styles.resultContainer}>
+        {isLoadingResult ? (
+          // 분석 결과 로딩 인디케이터
+          <ActivityIndicator size="large" color="#0000ff" style={styles.resultLoading} />
+        ) : (
+          result && (
+            <>
+              <Text style={styles.resultLabel}>분석 결과</Text>
+              <Text style={styles.resultText}>{result}</Text>
+              <Button
+                title="기록 저장"
+                onPress={async () => {
+                  if (!result) {
+                    Alert.alert("경고", "검색 결과가 없습니다!");
+                    return;
+                  }
 
-              if (!user) {
-                Alert.alert("로그인 필요", "로그인 시 이용 가능합니다!");
-                return;
-              }
+                  if (!user) {
+                    Alert.alert("로그인 필요", "로그인 시 이용 가능합니다!");
+                    return;
+                  }
 
-              const now = new Date();
-              const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+                  const now = new Date();
+                  const formattedDate = `${now.getFullYear()}-${String(
+                    now.getMonth() + 1
+                  ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")} ${String(
+                    now.getHours()
+                  ).padStart(2, "0")}:${String(now.getMinutes()).padStart(
+                    2,
+                    "0"
+                  )}:${String(now.getSeconds()).padStart(2, "0")}`;
 
-              const newRecord = {
-                date: formattedDate,
-                image: pillImage,
-                result,
-                email: user.email,
-              };
+                  const newRecord = {
+                    date: formattedDate,
+                    image: pillImage,
+                    result,
+                    email: user.email,
+                  };
 
-              await saveToServer(newRecord);
-            }} 
-          />
-        </View>
+                  await saveToServer(newRecord);
+                }}
+              />
+            </>
+          )
+        )}
+      </View>
+
+      {/* 기록 저장 중 로딩 모달 */}
+      {isSaving && (
+        <Modal transparent={true} animationType="fade">
+          <View style={styles.modalContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text style={styles.modalText}>저장 중...</Text>
+          </View>
+        </Modal>
       )}
     </View>
   );
