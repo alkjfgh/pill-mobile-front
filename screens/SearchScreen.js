@@ -6,12 +6,12 @@ import { RecordContext } from "../context/RecordContext";
 import useGetGoogleAuth from "../auth/useGetGoogleAuth"; // Google 인증 상태 가져오기
 
 const SearchScreen = () => {
-  const { addRecord, records, setRecords } = useContext(RecordContext); // 기록 추가 함수 가져오기
+  const { records, setRecords, refreshRecords } = useContext(RecordContext); // 기록 추가 함수 가져오기
   const { user } = useGetGoogleAuth(); // 로그인 상태 가져오기
   const [pillImage, setPillImage] = useState(null);
   const [result, setResult] = useState(null); // 서버에서 가져온 결과
 
-  // 서버로 이미지 URI 전송
+  // 서버로 이미지 URI 전송해서 검색
   const sendPillImageToServer  = async (imageUri) => {
     try {
       // FormData 객체 생성
@@ -26,7 +26,7 @@ const SearchScreen = () => {
 
       // FormData 내용 출력
       for (let pair of formData._parts) {
-        console.log(`${pair[0]}:`, pair[1]);
+        console.log("FormData" + `${pair[0]}:`, pair[1]);
       }
   
       const res = await fetch("http://1.209.148.143:8883/api/disPill/", {
@@ -101,6 +101,10 @@ const SearchScreen = () => {
       const data = await res.json();
       console.log("Record saved to server:", data);
 
+      if (user?.email) {
+        refreshRecords.current(user.email); // Refresh records after saving
+      }
+
       Alert.alert("저장 완료", "기록이 서버에 저장되었습니다!");
     } catch (error) {
       console.error("Error saving record to server:", error.message);
@@ -109,33 +113,33 @@ const SearchScreen = () => {
   };
 
   // 기록 저장 (로컬 및 서버)
-  const saveRecord = async () => {
-    if(!result){
-      Alert.alert("경고", "검색 결과가 없습니다!");
-      return;
-    }
+  // const saveRecord = async () => {
+  //   if(!result){
+  //     Alert.alert("경고", "검색 결과가 없습니다!");
+  //     return;
+  //   }
 
-    if (!user) {
-      Alert.alert("로그인 필요", "로그인 시 이용 가능합니다!");
-      return;
-    }
+  //   if (!user) {
+  //     Alert.alert("로그인 필요", "로그인 시 이용 가능합니다!");
+  //     return;
+  //   }
 
-    const now = new Date();
-    const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+  //   const now = new Date();
+  //   const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
 
-    const newRecord = {
-      date: formattedDate,
-      image: pillImage,
-      result,
-      email: user.email,
-    };
+  //   const newRecord = {
+  //     date: formattedDate,
+  //     image: pillImage,
+  //     result,
+  //     email: user.email,
+  //   };
 
-    console.log("기록 : " + newRecord.email);
+  //   console.log("기록 : " + newRecord.email);
 
-    addRecord(newRecord); // 컨텍스트에 기록 추가
-    Alert.alert("저장 완료", "검색 기록이 저장되었습니다.");
-    await saveToServer(newRecord); // 서버에 저장
-  }
+  //   addRecord(newRecord); // 컨텍스트에 기록 추가
+  //   Alert.alert("저장 완료", "검색 기록이 저장되었습니다.");
+  //   await saveToServer(newRecord); // 서버에 저장
+  // }
 
   return (
     <View style={styles.container}>
@@ -154,7 +158,33 @@ const SearchScreen = () => {
         <View style={styles.resultContainer}>
           <Text style={styles.resultLabel}>분석 결과</Text>
           <Text style={styles.resultText}>{result}</Text>
-          <Button title="기록 저장" onPress={saveRecord} />
+          {/* <Button title="기록 저장" onPress={saveRecord} /> */}
+          <Button 
+            title="기록 저장" 
+            onPress={async () => {
+              if(!result){
+                Alert.alert("경고", "검색 결과가 없습니다!");
+                return;
+              }
+
+              if (!user) {
+                Alert.alert("로그인 필요", "로그인 시 이용 가능합니다!");
+                return;
+              }
+
+              const now = new Date();
+              const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+              const newRecord = {
+                date: formattedDate,
+                image: pillImage,
+                result,
+                email: user.email,
+              };
+
+              await saveToServer(newRecord);
+            }} 
+          />
         </View>
       )}
     </View>
