@@ -1,5 +1,5 @@
 import { View, Text, Button, Alert, ActivityIndicator, Modal, TouchableOpacity } from "react-native";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import styles from "../style/SearchStyle";
