@@ -1,7 +1,32 @@
-import { View, Text, Button, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, Text, Button, SafeAreaView, TouchableOpacity, DevSettings, Alert } from "react-native";
 import styles from "../style/SettingStyle";
+import useGetGoogleAuth from "../auth/useGetGoogleAuth";
 
 const SettingScreen = ({ navigation }) => {
+  const { user, handleDeleteAccount } = useGetGoogleAuth();
+  
+  const confirmDelete = () => {
+    Alert.alert(
+      "회원 탈퇴",
+      "정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+      [
+        {
+          text: "취소",
+          style: "cancel"
+        },
+        {
+          text: "탈퇴",
+          onPress: async () => {
+            await handleDeleteAccount();
+            DevSettings.reload();  // 앱 재시작
+            console.log("탈퇴 : 앱 재시작");
+          },
+          style: "destructive"
+        }
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
 
@@ -20,6 +45,16 @@ const SettingScreen = ({ navigation }) => {
       >
         <Text style={styles.buttonText}>테마</Text>
       </TouchableOpacity> */}
+
+      {/* 로그인한 사용자일 경우에만 탈퇴하기 버튼 표시 */}
+      {user && (
+        <TouchableOpacity
+          style={[styles.button, styles.deleteButton]}
+          onPress={confirmDelete}
+        >
+          <Text style={[styles.buttonText, styles.deleteButtonText]}>탈퇴하기</Text>
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   );
 };

@@ -6,29 +6,7 @@ import useGetGoogleAuth from "../auth/useGetGoogleAuth";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 
 const LoginScreen = ({ navigation, route }) => {
-  const { user, promptAsync, handleLogout, request, handleDeleteAccount } = useGetGoogleAuth();
-
-  const confirmDelete = () => {
-    Alert.alert(
-      "회원 탈퇴",
-      "정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-      [
-        {
-          text: "취소",
-          style: "cancel"
-        },
-        {
-          text: "탈퇴",
-          onPress: async () => {
-            await handleDeleteAccount();
-            DevSettings.reload();  // 앱 재시작
-            console.log("앱 재시작");
-          },
-          style: "destructive"
-        }
-      ]
-    );
-  };
+  const { user, promptAsync, request } = useGetGoogleAuth();
 
   // Alert에서 이동한 경우 뒤로가기 시 검색 화면으로 이동
   useFocusEffect(
@@ -51,8 +29,6 @@ const LoginScreen = ({ navigation, route }) => {
           <Image source={{ uri: user.photoURL }} style={styles.userPhoto} />
           <Text>Welcome222, {user.displayName}!</Text>
           <Text>Email: {user.email}</Text>
-          {/* <Button title="Logout" onPress={handleLogout} /> */}
-          <Button title="계정 탈퇴" onPress={confirmDelete} color="#FF0000" />
         </View>
       ) : (
         <View style={styles.loginContainer}>

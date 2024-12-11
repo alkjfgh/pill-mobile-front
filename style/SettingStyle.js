@@ -21,6 +21,15 @@ const SettingStyle = StyleSheet.create({
     fontSize: 18,
     color: "#333",
   },
+  deleteButton: {
+    marginTop: 'auto',  
+    marginBottom: 20,   
+    backgroundColor: 'red',  
+  },
+  
+  deleteButtonText: {
+    color: '#fff',  
+  },
 });
 
 export default SettingStyle;

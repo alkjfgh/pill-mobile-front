@@ -4,6 +4,7 @@ import Photo from "../components/Photo";
 import { useState, useContext } from "react";
 import { RecordContext } from "../context/RecordContext";
 import useGetGoogleAuth from "../auth/useGetGoogleAuth"; // Google 인증 상태 가져오기
+import { useNavigation } from "@react-navigation/native";
 
 const SearchScreen = () => {
   const { refreshRecords } = useContext(RecordContext); // 기록 추가 함수 가져오기
@@ -12,6 +13,7 @@ const SearchScreen = () => {
   const [result, setResult] = useState(null); // 서버에서 가져온 결과
   const [isLoadingResult, setIsLoadingResult] = useState(false); // 분석 로딩 상태
   const [isSaving, setIsSaving] = useState(false); // 기록 저장 로딩 상태
+  const navigation = useNavigation();
 
   // 서버로 이미지 URI 전송해서 검색
   const sendPillImageToServer  = async (imageUri) => {
@@ -172,7 +174,19 @@ const SearchScreen = () => {
                   }
 
                   if (!user) {
-                    Alert.alert("로그인 필요", "로그인 시 이용 가능합니다!");
+                    Alert.alert(
+                      "로그인 필요",
+                      "로그인 시 이용 가능합니다!",
+                      [
+                        {
+                          text: "확인",
+                          onPress: () => navigation.navigate("계정", { 
+                            fromAlert: true,
+                            returnScreen: "검색"
+                          }),
+                        },
+                      ]
+                    );
                     return;
                   }
 

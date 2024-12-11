@@ -84,7 +84,7 @@ const DrawerNavigator = ({ navigation, route }) => {
                   setAlertShown(true);
                   Alert.alert(
                     "로그인 필요",
-                    "기록 화면은 로그인 후 이용 가능합니다.",
+                    "로그인 시 이용 가능합니다!",
                     [
                       {
                         text: "확인",
