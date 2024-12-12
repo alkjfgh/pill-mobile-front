@@ -1,6 +1,6 @@
 import { View, Text, Button, Image, Alert } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import styles from "../style/LoginStyle";
 import useGetGoogleAuth from "../auth/useGetGoogleAuth";
 import GoogleLoginButton from "../components/GoogleLoginButton";
@@ -8,12 +8,15 @@ import GoogleLoginButton from "../components/GoogleLoginButton";
 const LoginScreen = ({ navigation, route }) => {
   const { user, promptAsync, request } = useGetGoogleAuth();
 
+  // 한 번만 계정 화면으로 이동하도록 플래그 설정
+  const hasNavigated = useRef(false);
+
   // Alert에서 이동한 경우 뒤로가기 시 검색 화면으로 이동
   useFocusEffect(
     useCallback(() => {
       if (route.params?.fromAlert) {
         return () => {
-          navigation.navigate("DrawerNavigator", {
+          navigation.navigate("메뉴", {
             screen: route.params.returnScreen,
             resetAlert: true,
           });
@@ -27,9 +30,12 @@ const LoginScreen = ({ navigation, route }) => {
       {user ? (
         <View style={styles.loggedInContainer}>
           <Image source={{ uri: user.photoURL }} style={styles.userPhoto} />
+          <View style={styles.divider} />
           <View style={styles.userInfo}>
-            <Text>name : {user.displayName}</Text>
-            <Text>Email: {user.email}</Text>
+            <Text style={styles.userInfoTitle}>이름</Text>
+            <Text style={styles.userInfoText}>{user.displayName}</Text>
+            <Text style={styles.userInfoTitle}>이메일</Text>
+            <Text style={styles.userInfoText}>{user.email}</Text>
           </View>
         </View>
       ) : (

@@ -18,8 +18,13 @@ const SettingScreen = ({ navigation }) => {
           text: "탈퇴",
           onPress: async () => {
             await handleDeleteAccount();
-            DevSettings.reload();  // 앱 재시작
-            console.log("탈퇴 : 앱 재시작");
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "메뉴" }], // 앱의 첫 화면으로 이동 apk 빌드용
+            });
+            // DevSettings.reload();  // 앱 재시작 개발빌드에서만
+            // console.log("탈퇴 : 앱 재시작");
+            console.log("탈퇴 : 스택 리셋으로 첫 화면으로 이동");
           },
           style: "destructive"
         }
@@ -31,12 +36,37 @@ const SettingScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
 
       {/* 계정 설정 버튼 */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}> 내 계정 정보 </Text>
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate("계정")}
       >
-        <Text style={styles.buttonText}>계정</Text>
+        <Text style={styles.buttonText}> 계정 </Text>
       </TouchableOpacity>
+      </View>
+
+      {/* 앱 버전 설정 버튼 */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}> 앱 정보 </Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("App verion")}
+      >
+        <Text style={styles.buttonText}> 앱 버전 0.5.1 </Text>
+      </TouchableOpacity>
+      </View>
+
+       {/* 테마 기능 설정 버튼 */}
+       <View style={styles.section}>
+        <Text style={styles.sectionTitle}> 테마 </Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("ThemeSettings")}
+      >
+        <Text style={styles.buttonText}> 테마 설정 </Text>
+      </TouchableOpacity>
+      </View>
 
       {/* 테마 설정 버튼 */}
       {/* <TouchableOpacity

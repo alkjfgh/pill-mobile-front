@@ -21,7 +21,11 @@ const MyCustomDrawer = props => {
                     text: "확인",
                     onPress: async () => {
                         await handleLogout();
-                        DevSettings.reload();  // 앱 재시작
+                        // DevSettings.reload();  // 앱 재시작
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: "메뉴" }], // 앱의 첫 화면으로 이동 apk 빌드용
+                        });
                         console.log("앱 재시작");
                     }
                 }
@@ -34,25 +38,28 @@ const MyCustomDrawer = props => {
             {/* Header */}
             <View style={user?.photoURL ? styles.profilePictureContainer : styles.defaultPictureContainer}>
                 <View style={styles.profilePictureView}>
-                    <Image source={user?.photoURL ? {uri: user.photoURL} : require('../assets/logo.png')} style={styles.profilePicture} />
+                    <Image source={user?.photoURL ? {uri: user.photoURL} : require('../assets/appLogo.png')} style={user?.photoURL ? styles.profilePicture : styles.defaultPicture} />
+                    {!user && (
+                        <Text style={styles.profilePictureText}>이게 뭐약?</Text>
+                    )}
                 </View>
             </View>
+
 
             {/* 로그인한 경우에만 이메일 표시 */}
             {user?.email && (
                 <>
-                    <View style={styles.profileTextView}>
-                        <Text style={styles.profileText}>{user.displayName}</Text>
+                    <View style={user?.photoURL ? styles.profileTextView : styles.defaultProfileTextView}>
+                        <Text style={user?.photoURL ? styles.profileText : styles.defaultProfileText}>{user?.displayName}</Text>
                     </View>
                     <View style={styles.profileTextView}>
-                        <Text style={styles.profileText}>{user.email}</Text>
+                        <Text style={styles.profileTextEmail}>{user.email}</Text>
                         <View style={styles.divider} />
                     </View>
-                    <View style={styles.divider} />
                 </>
             )}
 
-            {/* <View style={styles.divider} /> */}
+            <View style={styles.divider} />
 
             {/* The navigation  */}
             <DrawerContentScrollView {...props}>
@@ -70,13 +77,26 @@ const MyCustomDrawer = props => {
                     </Text>
                 </View>
 
-                {user && (
+                {user ? (
                     <View style={styles.menuItemContainer}>
                         <Text 
                             onPress={handleLogoutPress}
                             style={styles.menuItemText}
                         >
                             로그아웃
+                        </Text>
+                    </View>
+                ) : (
+                    <View style={styles.menuItemContainer}>
+                        <Text 
+                            onPress={() =>
+                                navigation.navigate("계정", {
+                                  fromAlert: true,
+                                  returnScreen: "검색",
+                                })}
+                            style={styles.menuItemText}
+                        >
+                            로그인
                         </Text>
                     </View>
                 )}
