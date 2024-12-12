@@ -14,6 +14,7 @@ const SearchScreen = () => {
   const { user } = useGetGoogleAuth(); // 로그인 상태 가져오기
   const [pillImage, setPillImage] = useState(null);
   const [result, setResult] = useState(null); // 서버에서 가져온 결과
+  // const [translatedResult, setTranslatedResult] = useState(null); // 번역 결과
   const [isLoadingResult, setIsLoadingResult] = useState(false); // 분석 로딩 상태
   const [isSaving, setIsSaving] = useState(false); // 기록 저장 로딩 상태
   const [showManual, setShowManual] = useState(false);
@@ -55,9 +56,10 @@ const SearchScreen = () => {
       console.log("Response Data[search]:", data);
       
       // 서버 응답 확인 후 Alert 출력
-      if (data.message === "알약 이미지 판별 성공" && data.pill_name) {
+      if (data.message === "알약 이미지 판별 성공" && data.pill_name && data.translated_pill_name) {
         // Alert.alert("성공", `알약 이름: ${data.pill_name}`);
-        setResult(data.pill_name);
+        setResult(data.translated_pill_name);
+        // setTranslatedResult(data.translated_pill_name);
       } else {
         // Alert.alert("에러", "알약 이름을 가져올 수 없습니다.");
         setResult("알약을 판별할 수 없습니다.");
