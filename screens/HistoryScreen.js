@@ -1,43 +1,94 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, Modal, Button, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, Animated, ScrollView, ActivityIndicator } from 'react-native';
 import { RecordContext } from '../context/RecordContext';
 import styles from "../style/HistoryStyle";
 import useGetGoogleAuth from '../auth/useGetGoogleAuth';
 
 const HistoryScreen = () => {
   const { records, refreshRecords } = useContext(RecordContext); // 기록 가져오기
-  const [selectedRecord, setSelectedRecord] = useState(null); // 선택된 기록
+  const [expandedRecordId, setExpandedRecordId] = useState(null); // 확장된 텍스트 ID
+  const [heightAnim, setHeightAnim] = useState(new Animated.Value(0)); // 애니메이션 높이
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
   const { user } = useGetGoogleAuth(); // 로그인 상태 가져오기
-  
-  console.log("useGetGoogleAuth 반환값:", { user });
 
-  // 정렬된 기록을 반환하는 함수
-  const sortedRecords = [...records].sort((a, b) => {
-    return new Date(b.date) - new Date(a.date);
-  });
+  const sortedRecords = records ? [...records].sort((a, b) => new Date(b.date) - new Date(a.date)) : [];
 
-  const renderEmptyComponent = () => (
-    <View style={styles.emptyContainer}>
-      <Text style={styles.emptyText}>
-        아직 저장된 기록이 없습니다.{"\n"}알약을 검색하고 결과를 저장해보세요.
-      </Text>
-    </View>
-  );
-
-  // 화면 로드 시 서버 데이터 가져오기
   useEffect(() => {
-    console.log("user : " + user);
-    
     const fetchRecords = async () => {
       if (user?.email) {
         setIsLoading(true); // 로딩 시작
-        await refreshRecords.current(user.email);
+        if (refreshRecords?.current) {
+          await refreshRecords.current(user.email); // 데이터 가져오기
+        }
         setIsLoading(false); // 로딩 종료
       }
     };
     fetchRecords();
   }, [user]);
+
+  const toggleExpand = (id) => {
+    if (expandedRecordId === id) {
+      // 닫기 애니메이션
+      Animated.timing(heightAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start(() => setExpandedRecordId(null));
+    } else {
+      // 열기 애니메이션
+      setExpandedRecordId(id);
+      Animated.timing(heightAnim, {
+        toValue: 200, // 원하는 확장 높이 설정
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    }
+  };
+
+  const renderRecordItem = ({ item }) => {
+    const isExpanded = expandedRecordId === item.id; // 확장 여부 확인
+
+    return (
+      <View style={styles.recordItem}>
+        <TouchableOpacity
+          onPress={() => toggleExpand(item.id)}
+        >
+          <View style={styles.dateView}> 
+            <Text style={styles.recordDate}>날짜 : {item.date}</Text>
+          </View>
+          <View style={styles.recordContent}>
+            <Image
+              source={{ uri: item.imageUrl }}
+              style={styles.recordImage}
+              resizeMode="contain"
+            />
+            <View style={styles.recordDetails}>
+              <Text style={styles.recordText} numberOfLines={2}>
+                {item.result}
+              </Text>
+              <Text numberOfLines={2} ellipsizeMode="tail">
+              ("18세기 말에 아시아의 각 원종이 유럽에 도입되고 이들 유럽과 아시아 원종간의 교배가 이루어져 화색이나 화형은 물론 사계성이나 개화성 등 생태적으로 변화가 많은 품종들이 만들어졌다.")
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        {/* 확장된 텍스트 */}
+        {isExpanded && (
+          <Animated.View style={[styles.expandedContainer, { height: heightAnim }]}>
+            <ScrollView>
+              <Text style={styles.expandedText}>
+                {item.result}란? ("18세기 말에 아시아의 각 원종이 유럽에 도입되고 이들 유럽과 아시아 원종간의 교배가 이루어져 화색이나 화형은 물론 사계성이나 개화성 등 생태적으로 변화가 많은 품종들이 만들어졌다. 
+                18세기 이전의 장미를 고대장미(old rose), 19세기 이후의 장미를 현대장미(modern rose)라 한다.
+                장미는 온대성의 상록관목으로 햇빛을 좋아하는 식물이다. 적정생육온도는 구간 24~27℃이고 야간온도 15~18℃이다. 
+                30℃이상이면 꽃이 작아지고 꽃잎수가 줄어들어 퇴색하고 잎이 작아지며 엽색이 진해진다. 5℃정도이면 생육이 정지되고 0℃이하가 되면 낙엽이 지면서 휴면에 들어간다.")
+              </Text>
+            </ScrollView>
+          </Animated.View>
+        )}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -46,70 +97,14 @@ const HistoryScreen = () => {
       ) : (
         <FlatList
           data={sortedRecords}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={styles.recordItem}
-              onPress={() => setSelectedRecord(item)}
-            >
-              <Text style={styles.recordDate}>날짜 : {item.date}</Text>
-              <View style={styles.recordContent}>
-                {/* <Text style={styles.recordImage}>{item.image}</Text> */}
-                <Image 
-                  source={{ uri: item.imageUrl }} 
-                  style={styles.recordImage}
-                  resizeMode="contain" />
-                <View style={styles.recordDetails}>
-                  {/* <Text style={styles.recordText}>
-                    결과 : {item.result.length > 15 ? `${item.result.slice(0, 15)}...` : item.result}
-                  </Text> */}
-                    <Text style={styles.recordText} numberOfLines={2}>
-                      {item.result}
-                    </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+          keyExtractor={(item, index) => item?.id?.toString() || index.toString()}
+          renderItem={renderRecordItem}
+          ListEmptyComponent={() => (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>저장된 기록이 없습니다.</Text>
+            </View>
           )}
-          ListEmptyComponent={renderEmptyComponent}
-          showsVerticalScrollIndicator={false}
         />
-      )}
-
-      {/* 상세 모달 */}
-      {selectedRecord && (
-        <Modal 
-          visible={true} 
-          transparent={true} 
-          animationType="slide"
-          onRequestClose={() => setSelectedRecord(null)} // 안드로이드 뒤로가기 버튼 처리
-        >
-          <TouchableOpacity 
-            style={styles.modalContainer}
-            activeOpacity={1}
-            onPress={() => setSelectedRecord(null)} // 바깥 영역 터치시 닫기
-          >
-            <TouchableOpacity 
-              style={styles.modalContent}
-              activeOpacity={1}
-              onPress={(e) => e.stopPropagation()} // 모달 내부 터치시 닫히지 않도록
-            >
-              <Text style={styles.modalDate}>날짜 : {selectedRecord.date}</Text>
-              <Image 
-                source={{ uri: selectedRecord.imageUrl }} 
-                style={styles.modalImage} 
-                resizeMode="contain"
-              />
-              {/* <Text style={styles.modalText}>결과: {selectedRecord.result}</Text> */}
-              <Text style={styles.modalText}>{selectedRecord.result}</Text>
-              <TouchableOpacity 
-                style={styles.closeButton}
-                onPress={() => setSelectedRecord(null)}
-              >
-                <Text style={styles.closeButtonText}>닫기</Text>
-              </TouchableOpacity>
-            </TouchableOpacity>
-          </TouchableOpacity>
-        </Modal>
       )}
     </View>
   );
