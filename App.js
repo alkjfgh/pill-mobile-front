@@ -13,15 +13,32 @@ import DrawerNavigator from "./components/DrawerNavigator";
 import SettingScreen from './screens/SettingScreen';
 import { useEffect, useState } from 'react';
 import LoginScreen from './screens/LoginScreen';
+import OnboardingScreen from './screens/OnboardingScreen';
 
 const Stack = createStackNavigator();
 
 export default function App() {
+  const [showOnboarding, setShowOnboarding] = useState(true);
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      const hasShownOnboarding = await AsyncStorage.getItem('hasShownOnboarding');
+      setShowOnboarding(!hasShownOnboarding);
+      setIsReady(true);
+    };
+    checkOnboarding();
+  }, []);
+
+  if (!isReady) {
+    return null; // 로딩 중 화면 (필요시 로딩 컴포넌트를 추가 가능)
+  }
+
   return (
     <NavigationContainer>
       <RecordProvider>
         <SplashScreenComponent>
-          <Stack.Navigator>
+          {/* <Stack.Navigator>
             <Stack.Screen 
               name="메뉴" 
               component={DrawerNavigator} 
@@ -37,7 +54,31 @@ export default function App() {
               component={LoginScreen} 
               options={{ title: "계정" }} 
             />
-          </Stack.Navigator>
+          </Stack.Navigator> */}
+          {showOnboarding ? (
+            <OnboardingScreen onDone={async () => {
+              await AsyncStorage.setItem('hasShownOnboarding', 'true');
+              setShowOnboarding(false);
+            }} />
+          ) : (
+            <Stack.Navigator>
+              <Stack.Screen 
+                name="메뉴" 
+                component={DrawerNavigator} 
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen 
+                name="SettingScreen" 
+                component={SettingScreen}
+                options={{ title: "설정" }} 
+              />
+              <Stack.Screen 
+                name="계정" 
+                component={LoginScreen} 
+                options={{ title: "계정" }} 
+              />
+            </Stack.Navigator>
+          )}
           <StatusBar style="auto" />
         </SplashScreenComponent>
       </RecordProvider>

@@ -21,7 +21,11 @@ const MyCustomDrawer = props => {
                     text: "확인",
                     onPress: async () => {
                         await handleLogout();
-                        DevSettings.reload();  // 앱 재시작
+                        // DevSettings.reload();  // 앱 재시작
+                        navigation.reset({
+                            index: 0,
+                            routes: [{ name: "메뉴" }], // 앱의 첫 화면으로 이동 apk 빌드용
+                        });
                         console.log("앱 재시작");
                     }
                 }

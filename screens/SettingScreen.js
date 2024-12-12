@@ -18,8 +18,13 @@ const SettingScreen = ({ navigation }) => {
           text: "탈퇴",
           onPress: async () => {
             await handleDeleteAccount();
-            DevSettings.reload();  // 앱 재시작
-            console.log("탈퇴 : 앱 재시작");
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "메뉴" }], // 앱의 첫 화면으로 이동 apk 빌드용
+            });
+            // DevSettings.reload();  // 앱 재시작 개발빌드에서만
+            // console.log("탈퇴 : 앱 재시작");
+            console.log("탈퇴 : 스택 리셋으로 첫 화면으로 이동");
           },
           style: "destructive"
         }

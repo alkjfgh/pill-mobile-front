@@ -15,41 +15,15 @@ const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = ({ navigation, route }) => {
   const { user } = useGetGoogleAuth();
-  const [showOnboarding, setShowOnboarding] = useState(true);
+  // const [showOnboarding, setShowOnboarding] = useState(true);
   const [alertShown, setAlertShown] = useState(false);
   const [isManualVisible, setIsManualVisible] = useState(false);
-
-  // 온보딩 표시 여부 확인하는 함수 추가
-  const checkOnboarding = async () => {
-    try {
-      const hasShownOnboarding = await AsyncStorage.getItem('hasShownOnboarding');
-      if (hasShownOnboarding) {
-        setShowOnboarding(false);
-      }
-    } catch (error) {
-      console.log('Error checking onboarding status:', error);
-    }
-  };
-
-  // 온보딩 완료 처리 함수 수정
-  const handleOnboardingComplete = async () => {
-    try {
-      await AsyncStorage.setItem('hasShownOnboarding', 'true');
-      setShowOnboarding(false);
-    } catch (error) {
-      console.log('Error saving onboarding status:', error);
-    }
-  };
-
-  // 컴포넌트 마운트 시 온보딩 표시 여부 확인
-  useEffect(() => {
-    checkOnboarding();
-  }, []);
 
   useEffect(() => {
     console.log("현재 로그인 사용자:", user);
     if(user){
       setAlertShown(false);
+      console.log("alertShown 초기화 : ", alertShown);
     }
   }, [user]);
 
@@ -68,7 +42,7 @@ const DrawerNavigator = ({ navigation, route }) => {
     <>
       <Drawer.Navigator
         drawerContent={props => <MyCustomDrawer {...props} />}
-        initialRouteName={showOnboarding ? "OnboardingScreen" : "검색"}
+        initialRouteName="검색"
         screenOptions={({ navigation, route }) => ({
           drawerActiveBackgroundColor: '#E2E2E2',
           drawerActiveTintColor: 'black',
@@ -120,78 +94,59 @@ const DrawerNavigator = ({ navigation, route }) => {
           drawerItemStyle: {
             borderRadius: 10,  // 드로어 아이템의 모서리를 각지게
           },
-          swipeEnabled: !showOnboarding  // 온보딩 화면일 때는 스와이프 비활성화
         })}
       >
-        {showOnboarding ? (
-          <Drawer.Screen 
-            name="OnboardingScreen" 
-            options={{ headerShown: false }}
-          >
-            {(props) => (
-              <OnboardingScreen 
-                {...props} 
-                onDone={handleOnboardingComplete} 
+        <Drawer.Screen
+          name="검색"
+          component={SearchScreen}
+          options={{
+            drawerIcon: ({ focused }) => (
+              <Image
+                source={require("../assets/search.png")}
+                style={{
+                  width: 24,
+                  height: 24,
+                  tintColor: focused ? "black" : "#333333",
+                }}
               />
-            )}
-          </Drawer.Screen>
-        ) : (
-          <>
-            <Drawer.Screen 
-              name="검색" 
-              component={SearchScreen} 
-              options={{
-                drawerIcon: ({focused}) => (
-                  <Image 
-                    source={require('../assets/search.png')}  // 검색 아이콘 이미지 경로
-                    style={{
-                      width: 24,
-                      height: 24,
-                      tintColor: focused ? 'black' : '#333333'  // 선택 시 색상 변경
-                    }}
-                  />
-                )
-              }} 
-            />
-            <Drawer.Screen
-              name="기록"
-              options={{
-                headerShown: true,
-                drawerIcon: ({focused}) => (
-                  <Image 
-                    source={require('../assets/history.png')}  // 기록 아이콘 이미지 경로
-                    style={{
-                      width: 24,
-                      height: 24,
-                      tintColor: focused ? 'black' : '#333333'  // 선택 시 색상 변경
-                    }}
-                  />
-                )
-              }}
-              listeners={({ navigation }) => ({
-                focus: () => {
-                  if (!user && !alertShown) {
-                    setAlertShown(true);
-                    Alert.alert(
-                      "로그인 필요",
-                      "로그인 시 이용 가능합니다!",
-                      [
-                        {
-                          text: "확인",
-                          onPress: () => navigation.navigate("계정", { 
-                            fromAlert: true,
-                            returnScreen: "검색"  // 돌아갈 화면 정보 추가
-                          }),
-                        },
-                      ]
-                    );
-                  }
-                },
-              })}
-              component={HistoryScreen}
-            />
-          </>
-        )}
+            ),
+          }}
+        />
+        <Drawer.Screen
+          name="기록"
+          component={HistoryScreen}
+          options={{
+            headerShown: true,
+            drawerIcon: ({ focused }) => (
+              <Image
+                source={require("../assets/history.png")}
+                style={{
+                  width: 24,
+                  height: 24,
+                  tintColor: focused ? "black" : "#333333",
+                }}
+              />
+            ),
+          }}
+          listeners={({ navigation }) => ({
+            focus: () => {
+              console.log("alertShown", alertShown);
+              if (!user && !alertShown) {
+                setAlertShown(true);
+                Alert.alert("로그인 필요", "로그인 시 이용 가능합니다!", [
+                  {
+                    text: "확인",
+                    onPress: () =>
+                      navigation.navigate("계정", {
+                        fromAlert: true,
+                        returnScreen: "검색",
+                      }),
+                  },
+                ]);
+              }
+            },
+          })}
+        />
       </Drawer.Navigator>
       <Manual
         visible={isManualVisible}
