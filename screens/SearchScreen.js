@@ -40,7 +40,7 @@ const SearchScreen = () => {
         console.log("FormData" + `${pair[0]}:`, pair[1]);
       }
   
-      const res = await fetch("http://1.209.148.143:8883/api/disPill/", {
+      const res = await fetch("http://1.209.148.143:8883/api/disPill/flower", {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
@@ -56,9 +56,9 @@ const SearchScreen = () => {
       console.log("Response Data[search]:", data);
       
       // 서버 응답 확인 후 Alert 출력
-      if (data.message === "알약 이미지 판별 성공" && data.pill_name && data.translated_pill_name) {
+      if (data.message === "꽃 이미지 판별 성공" && data.name && data.translated_name) {
         // Alert.alert("성공", `알약 이름: ${data.pill_name}`);
-        setResult(data.translated_pill_name);
+        setResult(data.translated_name);
         // setTranslatedResult(data.translated_pill_name);
       } else {
         // Alert.alert("에러", "알약 이름을 가져올 수 없습니다.");
