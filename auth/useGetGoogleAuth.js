@@ -17,6 +17,7 @@ const useGetGoogleAuth = () => {
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     clientId: "224490414807-j4p0q498a68abg5lrch2q3es80j1nc6b.apps.googleusercontent.com",
     androidClientId: "224490414807-0sarci38gg865dc2m0o2a7aj41vobi3m.apps.googleusercontent.com",
+    iosClientId: "224490414807-53b7eqjruc4ovf2m5bht8tdop6hu7ttp.apps.googleusercontent.com"
   });
 
   // 앱 시작 시 Firebase 인증 상태 확인 및 AsyncStorage에서 사용자 정보 로드
