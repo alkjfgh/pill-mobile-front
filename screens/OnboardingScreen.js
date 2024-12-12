@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from '../style/OnboardingStyle';
 
 const slides = [

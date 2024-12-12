@@ -7,7 +7,6 @@ import useGetGoogleAuth from '../auth/useGetGoogleAuth';
 const HistoryScreen = () => {
   const { records, refreshRecords } = useContext(RecordContext); // 기록 가져오기
   const [expandedRecordId, setExpandedRecordId] = useState(null); // 확장된 텍스트 ID
-  // const [heightAnim, setHeightAnim] = useState(new Animated.Value(0)); // 애니메이션 높이
   const heightAnimRefs = useRef({}); // 각 아이템의 애니메이션 높이를 관리
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
   const { user } = useGetGoogleAuth(); // 로그인 상태 가져오기
