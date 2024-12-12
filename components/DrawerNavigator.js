@@ -73,6 +73,10 @@ const DrawerNavigator = ({ navigation, route }) => {
           drawerActiveBackgroundColor: '#E2E2E2',
           drawerActiveTintColor: 'black',
           drawerInactiveTintColor: '#333333',
+          drawerLabelStyle: {
+            fontSize: 18,  // 폰트 크기 증가
+            fontWeight: '500',  // 선택사항: 폰트 두께 추가
+          },
           headerStyle: {
             backgroundColor: 'white',
             elevation: 0,            // 안드로이드 그림자 제거
@@ -133,10 +137,37 @@ const DrawerNavigator = ({ navigation, route }) => {
           </Drawer.Screen>
         ) : (
           <>
-            <Drawer.Screen name="검색" component={SearchScreen} />
+            <Drawer.Screen 
+              name="검색" 
+              component={SearchScreen} 
+              options={{
+                drawerIcon: ({focused}) => (
+                  <Image 
+                    source={require('../assets/search.png')}  // 검색 아이콘 이미지 경로
+                    style={{
+                      width: 24,
+                      height: 24,
+                      tintColor: focused ? 'black' : '#333333'  // 선택 시 색상 변경
+                    }}
+                  />
+                )
+              }} 
+            />
             <Drawer.Screen
               name="기록"
-              options={{headerShown: true}}
+              options={{
+                headerShown: true,
+                drawerIcon: ({focused}) => (
+                  <Image 
+                    source={require('../assets/history.png')}  // 기록 아이콘 이미지 경로
+                    style={{
+                      width: 24,
+                      height: 24,
+                      tintColor: focused ? 'black' : '#333333'  // 선택 시 색상 변경
+                    }}
+                  />
+                )
+              }}
               listeners={({ navigation }) => ({
                 focus: () => {
                   if (!user && !alertShown) {
