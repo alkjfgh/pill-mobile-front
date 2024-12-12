@@ -2,8 +2,8 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useEffect, useState } from "react";
 import 'react-native-gesture-handler';
 import { Alert, Image, TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import LoginScreen from "../screens/LoginScreen";
 import SearchScreen from "../screens/SearchScreen";
 import HistoryScreen from "../screens/HistoryScreen";
 import MyCustomDrawer from "./MyCustomDrawer";
@@ -18,6 +18,33 @@ const DrawerNavigator = ({ navigation, route }) => {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [alertShown, setAlertShown] = useState(false);
   const [isManualVisible, setIsManualVisible] = useState(false);
+
+  // 온보딩 표시 여부 확인하는 함수 추가
+  const checkOnboarding = async () => {
+    try {
+      const hasShownOnboarding = await AsyncStorage.getItem('hasShownOnboarding');
+      if (hasShownOnboarding) {
+        setShowOnboarding(false);
+      }
+    } catch (error) {
+      console.log('Error checking onboarding status:', error);
+    }
+  };
+
+  // 온보딩 완료 처리 함수 수정
+  const handleOnboardingComplete = async () => {
+    try {
+      await AsyncStorage.setItem('hasShownOnboarding', 'true');
+      setShowOnboarding(false);
+    } catch (error) {
+      console.log('Error saving onboarding status:', error);
+    }
+  };
+
+  // 컴포넌트 마운트 시 온보딩 표시 여부 확인
+  useEffect(() => {
+    checkOnboarding();
+  }, []);
 
   useEffect(() => {
     console.log("현재 로그인 사용자:", user);
@@ -100,7 +127,7 @@ const DrawerNavigator = ({ navigation, route }) => {
             {(props) => (
               <OnboardingScreen 
                 {...props} 
-                onDone={() => setShowOnboarding(false)} 
+                onDone={handleOnboardingComplete} 
               />
             )}
           </Drawer.Screen>
