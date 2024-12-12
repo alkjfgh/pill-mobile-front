@@ -24,6 +24,8 @@ const LoginStyle = StyleSheet.create({
     elevation: 5,
   },
   loggedInContainer: {
+    width: "90%",
+    height: "60%",
     alignItems: "center",
     padding: 30,
     backgroundColor: "#ffffff",
@@ -61,9 +63,9 @@ const LoginStyle = StyleSheet.create({
     marginVertical: 25,
   },
   userPhoto: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     marginBottom: 15,
     borderWidth: 3,
     borderColor: "#f0f0f0",
@@ -71,6 +73,16 @@ const LoginStyle = StyleSheet.create({
   userInfo: {
     marginTop: 15,
   },
+  userInfoTitle: {
+    fontSize: 16,
+    marginBottom: 10,
+    color: "#666666",
+  },
+  userInfoText: {
+    fontSize: 22,
+    marginBottom: 20,
+    color: "black",
+  }
 });
 
 export default LoginStyle;

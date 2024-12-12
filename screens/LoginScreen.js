@@ -14,18 +14,6 @@ const LoginScreen = ({ navigation, route }) => {
   // Alert에서 이동한 경우 뒤로가기 시 검색 화면으로 이동
   useFocusEffect(
     useCallback(() => {
-      // if (route.params?.fromAlert) {
-      //   navigation.navigate("계정"); // 계정 화면으로 이동
-      // }
-  
-      // return () => {
-      //   if (route.params?.fromAlert) {
-      //     navigation.navigate("DrawerNavigator", {
-      //       screen: route.params.returnScreen || "검색", // 기본값 추가
-      //       resetAlert: true,
-      //     });
-      //   }
-      // };
       if (route.params?.fromAlert) {
         return () => {
           navigation.navigate("메뉴", {
@@ -34,24 +22,6 @@ const LoginScreen = ({ navigation, route }) => {
           });
         };
       }
-      // navigation.navigate("검색");
-      // navigation.navigate("메뉴", { screen: "검색" });
-      // navigation.reset({
-      //   index: 0,
-      //   routes: [{ name: "메뉴", params: { screen: "검색" } }],
-      // });
-      
-    //   if (route.params?.fromAlert && !hasNavigated.current) {
-    //   hasNavigated.current = true; // 경로 변경 플래그 설정
-    //   navigation.navigate("계정"); // 계정 화면으로 이동
-    // }
-
-    // return () => {
-    //   // 뒤로 가기 시 한 번만 실행
-    //   if (route.params?.fromAlert && hasNavigated.current) {
-    //     navigation.navigate("메뉴", { screen: "검색" });
-    //   }
-    // };
     }, [navigation, route.params])
   );
 
@@ -60,9 +30,12 @@ const LoginScreen = ({ navigation, route }) => {
       {user ? (
         <View style={styles.loggedInContainer}>
           <Image source={{ uri: user.photoURL }} style={styles.userPhoto} />
+          <View style={styles.divider} />
           <View style={styles.userInfo}>
-            <Text>name : {user.displayName}</Text>
-            <Text>Email: {user.email}</Text>
+            <Text style={styles.userInfoTitle}>이름</Text>
+            <Text style={styles.userInfoText}>{user.displayName}</Text>
+            <Text style={styles.userInfoTitle}>이메일</Text>
+            <Text style={styles.userInfoText}>{user.email}</Text>
           </View>
         </View>
       ) : (
