@@ -23,9 +23,19 @@ const SettingStyle = StyleSheet.create({
     fontSize: 14,
     color: "#333",
   },
+  appText:{
+    fontSize: 14,
+    color: "#333",
+    marginLeft: 5,
+  },
   sectionTitle: {
    margin: 18,
    fontWeight: 'bold'
+  },
+  userPhoto:{
+    width: 30,
+    height: 30,
+    borderRadius: 15,
   },
   versionText: {
     fontSize: 14, // 동일한 크기로 설정
@@ -42,7 +52,6 @@ const SettingStyle = StyleSheet.create({
     marginBottom: 20,   
     backgroundColor: 'red',  
   },
-  
   deleteButtonText: {
     color: '#fff',  
   },

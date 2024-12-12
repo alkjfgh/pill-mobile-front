@@ -25,7 +25,7 @@ const LoginStyle = StyleSheet.create({
   },
   loggedInContainer: {
     width: "90%",
-    height: "60%",
+    height: "70%",
     alignItems: "center",
     padding: 30,
     backgroundColor: "#ffffff",
@@ -82,7 +82,33 @@ const LoginStyle = StyleSheet.create({
     fontSize: 22,
     marginBottom: 20,
     color: "black",
-  }
+  },
+  button: {
+    backgroundColor: "#ffffff",
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+    // width: "90%",
+  },
+  buttonText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  deleteButton: {
+    // marginTop: 'auto',
+    marginTop: 20,
+    marginBottom: 20,   
+    backgroundColor: '#000',  
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',  
+  },
 });
 
 export default LoginStyle;
