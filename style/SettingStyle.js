@@ -10,7 +10,7 @@ const SettingStyle = StyleSheet.create({
     backgroundColor: "#ffffff",
     padding: 16,
     borderRadius: 8,
-    marginBottom: 10,
+    marginBottom: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -18,9 +18,14 @@ const SettingStyle = StyleSheet.create({
     elevation: 3,
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 14,
     color: "#333",
   },
+  sectionTitle: {
+   margin: 18,
+   fontWeight: 'bold'
+  },
+
   deleteButton: {
     marginTop: 'auto',  
     marginBottom: 20,   
