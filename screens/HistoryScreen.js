@@ -17,6 +17,14 @@ const HistoryScreen = () => {
     return new Date(b.date) - new Date(a.date);
   });
 
+  const renderEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>
+        아직 저장된 기록이 없습니다.{"\n"}알약을 검색하고 결과를 저장해보세요.
+      </Text>
+    </View>
+  );
+
   // 화면 로드 시 서버 데이터 가져오기
   useEffect(() => {
     console.log("user : " + user);
@@ -52,31 +60,55 @@ const HistoryScreen = () => {
                   style={styles.recordImage}
                   resizeMode="contain" />
                 <View style={styles.recordDetails}>
-                  <Text style={styles.recordText}>
+                  {/* <Text style={styles.recordText}>
                     결과 : {item.result.length > 15 ? `${item.result.slice(0, 15)}...` : item.result}
-                  </Text>
+                  </Text> */}
+                    <Text style={styles.recordText} numberOfLines={2}>
+                      {item.result}
+                    </Text>
                 </View>
               </View>
             </TouchableOpacity>
           )}
+          ListEmptyComponent={renderEmptyComponent}
+          showsVerticalScrollIndicator={false}
         />
       )}
 
       {/* 상세 모달 */}
       {selectedRecord && (
-        <Modal visible={true} transparent={true} animationType="slide">
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
+        <Modal 
+          visible={true} 
+          transparent={true} 
+          animationType="slide"
+          onRequestClose={() => setSelectedRecord(null)} // 안드로이드 뒤로가기 버튼 처리
+        >
+          <TouchableOpacity 
+            style={styles.modalContainer}
+            activeOpacity={1}
+            onPress={() => setSelectedRecord(null)} // 바깥 영역 터치시 닫기
+          >
+            <TouchableOpacity 
+              style={styles.modalContent}
+              activeOpacity={1}
+              onPress={(e) => e.stopPropagation()} // 모달 내부 터치시 닫히지 않도록
+            >
               <Text style={styles.modalDate}>날짜 : {selectedRecord.date}</Text>
               <Image 
                 source={{ uri: selectedRecord.imageUrl }} 
                 style={styles.modalImage} 
                 resizeMode="contain"
               />
-              <Text style={styles.modalText}>결과: {selectedRecord.result}</Text>
-              <Button title="닫기" onPress={() => setSelectedRecord(null)} />
-            </View>
-          </View>
+              {/* <Text style={styles.modalText}>결과: {selectedRecord.result}</Text> */}
+              <Text style={styles.modalText}>{selectedRecord.result}</Text>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={() => setSelectedRecord(null)}
+              >
+                <Text style={styles.closeButtonText}>닫기</Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
+          </TouchableOpacity>
         </Modal>
       )}
     </View>
