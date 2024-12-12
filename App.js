@@ -15,32 +15,7 @@ import LoginScreen from './screens/LoginScreen';
 
 const Stack = createStackNavigator();
 
-const sendRequest = async () => {
-  const SERVER_URL = Constants.expoConfig.extra.serverUrl;
-
-  console.log("Sending request to:", SERVER_URL);
-
-  try {
-    const response = await fetch(`${SERVER_URL}/api/test`, {
-      method: "GET",
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    console.log("Response Data:", data);
-  } catch (error) {
-    console.error("Error in fetch:", error.message);
-  }
-};
-
 export default function App() {
-  useEffect(() => {
-    sendRequest(); // 앱 시작 시 서버 요청 실행
-  }, []);
-
   return (
     <NavigationContainer>
       <RecordProvider>
