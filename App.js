@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 import DrawerNavigator from "./components/DrawerNavigator";
 import SettingScreen from './screens/SettingScreen';
 import { useEffect, useState } from 'react';
@@ -23,7 +24,7 @@ export default function App() {
         <SplashScreenComponent>
           <Stack.Navigator>
             <Stack.Screen 
-              name="DrawerNavigator" 
+              name="메뉴" 
               component={DrawerNavigator} 
               options={{ headerShown: false }}
             />

@@ -31,12 +31,37 @@ const SettingScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
 
       {/* 계정 설정 버튼 */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}> 내 계정 정보 </Text>
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigation.navigate("계정")}
       >
-        <Text style={styles.buttonText}>계정</Text>
+        <Text style={styles.buttonText}> 계정 </Text>
       </TouchableOpacity>
+      </View>
+
+      {/* 앱 버전 설정 버튼 */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}> 앱 정보 </Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("App verion")}
+      >
+        <Text style={styles.buttonText}> 앱 버전 0.5.1 </Text>
+      </TouchableOpacity>
+      </View>
+
+       {/* 테마 기능 설정 버튼 */}
+       <View style={styles.section}>
+        <Text style={styles.sectionTitle}> 테마 </Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("ThemeSettings")}
+      >
+        <Text style={styles.buttonText}> 테마 설정 </Text>
+      </TouchableOpacity>
+      </View>
 
       {/* 테마 설정 버튼 */}
       {/* <TouchableOpacity
