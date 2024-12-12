@@ -1,6 +1,6 @@
 import { View, Text, Button, Alert, ActivityIndicator, Modal, TouchableOpacity } from "react-native";
-import { useState, useContext, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useState, useContext, useEffect, useCallback } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import styles from "../style/SearchStyle";
 import Photo from "../components/Photo";
@@ -18,6 +18,7 @@ const SearchScreen = () => {
   const [isLoadingResult, setIsLoadingResult] = useState(false); // 분석 로딩 상태
   const [isSaving, setIsSaving] = useState(false); // 기록 저장 로딩 상태
   const [showManual, setShowManual] = useState(false);
+  const [resetPhoto, setResetPhoto] = useState(false);
   const navigation = useNavigation();
 
   // 서버로 이미지 URI 전송해서 검색
@@ -197,29 +198,32 @@ const SearchScreen = () => {
     checkFirstTime();
   }, []);
 
+  // 화면 초기화 함수
+  const resetScreenState = () => {
+    setResetPhoto(true); // Photo 상태 초기화
+    setPillImage(null);
+    setResult(null);
+    setIsLoadingResult(false);
+  };
+
+  // 화면이 다시 포커스를 얻으면 상태 초기화
+  useFocusEffect(
+    useCallback(() => {
+      resetScreenState();
+      return () => setResetPhoto(false);
+    }, [])
+  );
+
   return (
     <View style={styles.container}>
-      <Photo label="알약 이미지" onSelect={(uri) => setPillImage(uri)} />
-      <TouchableOpacity
-        onPress={() => {
-          if (pillImage) {
-            sendPillImageToServer(pillImage);
-          } else {
-            Alert.alert(
-              "경고", 
-              "이미지를 선택해주세요!", 
-              [{ text: "확인" }],
-              { 
-                cancelable: true,
-                onDismiss: () => console.log('Alert dismissed')
-              }
-            );
-          }
-        }}
-        style={styles.searchButton}
-      >
-        <Text style={styles.searchButtonText}>검색</Text>
-      </TouchableOpacity>
+      <Photo 
+        label="사진 첨부" 
+        reset={resetPhoto}
+        onSelect={(uri) => {
+          setPillImage(uri);
+          sendPillImageToServer(uri);
+        }} 
+      />
 
       {/* 서버 결과 표시 */}
       {(isLoadingResult || result) && (
@@ -233,7 +237,7 @@ const SearchScreen = () => {
                 <Text style={styles.resultLabel}>분석 결과</Text>
                 <Text style={styles.resultText}>{result}</Text>
                 <TouchableOpacity
-                style={[styles.searchButton, { backgroundColor: '#2ecc71' }]}
+                  style={styles.searchButton}
                   onPress={async () => {
                     if (!result) {
                       Alert.alert(

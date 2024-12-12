@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, Alert, Button } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import styles from "../style/PhotoStyle";
 import camera from "../assets/camera.png";
 
-const Photo = ({ label, onSelect }) => {
+const Photo = ({ label, onSelect, reset }) => {
   const [photoUri, setPhotoUri] = useState(null);
 
   const selectImage = async () => {
@@ -71,6 +71,15 @@ const Photo = ({ label, onSelect }) => {
       }
     );
   };
+
+  // 부모 컴포넌트에서 reset이 true가 되면 초기화
+  useEffect(() => {
+    if (reset) {
+      setPhotoUri(null);
+    }
+  }, [reset]);
+
+  console.log("Photo 컴포넌트 리렌더링 : " + photoUri);
 
   return (
     <View style={styles.photoContainer}>
