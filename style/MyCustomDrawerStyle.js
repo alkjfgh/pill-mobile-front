@@ -35,7 +35,28 @@ const MyCustomDrawerStyle = StyleSheet.create({
   profileText: {
     fontSize: 14,
     color: '#000000',
-  }
+  },
+  divider: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#cccccc',
+    marginHorizontal: 20,
+    marginTop: 10,
+  },
+  footerContainer: {
+    padding: 20, 
+    borderTopWidth: 1, 
+    borderTopColor: '#cccccc'
+  },
+  menuItemContainer: {
+      flexDirection: 'row', 
+      alignItems: 'center', 
+      paddingVertical: 15
+  },
+  menuItemText: {
+      color: 'gray', 
+      fontSize: 15, 
+      marginLeft: 5
+  },
 });
 
 export default MyCustomDrawerStyle;

@@ -27,8 +27,10 @@ const LoginScreen = ({ navigation, route }) => {
       {user ? (
         <View style={styles.loggedInContainer}>
           <Image source={{ uri: user.photoURL }} style={styles.userPhoto} />
-          <Text>Welcome222, {user.displayName}!</Text>
-          <Text>Email: {user.email}</Text>
+          <View style={styles.userInfo}>
+            <Text>name : {user.displayName}</Text>
+            <Text>Email: {user.email}</Text>
+          </View>
         </View>
       ) : (
         <View style={styles.loginContainer}>
