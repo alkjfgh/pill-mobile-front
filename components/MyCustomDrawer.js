@@ -42,21 +42,21 @@ const MyCustomDrawer = props => {
                 </View>
             </View>
 
+            <View style={styles.profileTextView}>
+                <Text style={styles.profileText}>{user?.displayName || '로그인 해주세요' }</Text>
+            </View>
+
             {/* 로그인한 경우에만 이메일 표시 */}
             {user?.email && (
                 <>
                     <View style={styles.profileTextView}>
-                        <Text style={styles.profileText}>{user.displayName}</Text>
-                    </View>
-                    <View style={styles.profileTextView}>
                         <Text style={styles.profileText}>{user.email}</Text>
                         <View style={styles.divider} />
                     </View>
-                    <View style={styles.divider} />
                 </>
             )}
 
-            {/* <View style={styles.divider} /> */}
+            <View style={styles.divider} />
 
             {/* The navigation  */}
             <DrawerContentScrollView {...props}>
