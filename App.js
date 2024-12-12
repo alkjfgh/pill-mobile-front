@@ -16,7 +16,6 @@ import LoginScreen from './screens/LoginScreen';
 const Stack = createStackNavigator();
 
 export default function App() {
-
   return (
     <NavigationContainer>
       <RecordProvider>

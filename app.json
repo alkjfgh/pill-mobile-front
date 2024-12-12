@@ -6,7 +6,11 @@
     "orientation": "portrait",
     "icon": "./assets/appLogo.png",
     "userInterfaceStyle": "light",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "ios": {
       "bundleIdentifier": "com.spica.pillmobilefront",
       "supportsTablet": true,
@@ -27,11 +31,17 @@
     },
     "android": {
       "package": "com.spica.pillmobilefront",
-      "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
       "config": {
         "networkSecurityConfig": {
-          "cleartextTrafficPermitted": true, 
-          "domains": ["1.209.148.143"] 
+          "cleartextTrafficPermitted": true,
+          "domains": [
+            "1.209.148.143"
+          ]
         }
       }
     },
@@ -43,6 +53,16 @@
         "projectId": "f11bbd72-49fe-4338-b172-463d4998754c"
       },
       "serverUrl": "http://1.209.148.143:8883"
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ]
   }
 }
