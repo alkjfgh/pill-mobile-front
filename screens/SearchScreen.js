@@ -42,7 +42,7 @@ const SearchScreen = () => {
         console.log("FormData" + `${pair[0]}:`, pair[1]);
       }
   
-      const res = await fetch("http://1.209.148.143:8883/api/disPill/flower", {
+      const res = await fetch("http://1.209.148.143:8883/api/disPill/", {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
@@ -58,14 +58,15 @@ const SearchScreen = () => {
       console.log("Response Data[search]:", data);
       
       // 서버 응답 확인 후 Alert 출력
-      if (data.message === "꽃 이미지 판별 성공" && data.name && data.translated_name) {
+      if (data.message === "알약 이미지 판별 성공" && data.name && data.description) {
         // Alert.alert("성공", `알약 이름: ${data.pill_name}`);
-        setResult(data.translated_name);
-        setDetailResult("1) 파킨슨증후군(약물로 인한 파킨슨병 제외)");
+        setResult(data.name);
+        setDetailResult(data.description);
         // setTranslatedResult(data.translated_pill_name);
       } else {
         // Alert.alert("에러", "알약 이름을 가져올 수 없습니다.");
         setResult("알약을 판별할 수 없습니다.");
+        setDetailResult(null);
       }
     } catch (error) {
       console.log("Error sending images[search]:", error.message);
@@ -205,6 +206,7 @@ const SearchScreen = () => {
     setResetPhoto(true); // Photo 상태 초기화
     setPillImage(null);
     setResult(null);
+    setDetailResult(null);
     setIsLoadingResult(false);
   };
 
