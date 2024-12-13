@@ -110,6 +110,7 @@ const SearchScreen = () => {
       });
       formData.append("result", record.result);
       formData.append("email", record.email);
+      formData.append("description", record.description);
 
       // for (let pair of formData._parts) {
       //   console.log(`FormData 내용 - ${pair[0]}:`, pair[1]);
@@ -301,6 +302,7 @@ const SearchScreen = () => {
                       image: pillImage,
                       result,
                       email: user.email,
+                      description: detailResult,
                     };
 
                     await saveToServer(newRecord);

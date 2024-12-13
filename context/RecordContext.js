@@ -33,6 +33,7 @@ export const RecordProvider = ({ children }) => {
         imageUrl: `http://1.209.148.143:8883/api/logs/image/${record.image}`,
         result: record.result,
         date: record.date,
+        description: record.description,
       }));
 
       setRecords(logs);

@@ -10,6 +10,8 @@ const HistoryScreen = () => {
   const heightAnimRefs = useRef({}); // 각 아이템의 애니메이션 높이를 관리
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
   const { user } = useGetGoogleAuth(); // 로그인 상태 가져오기
+  const [contentHeight, setContentHeight] = useState({});
+  const [measuredHeight, setMeasuredHeight] = useState({});
 
   // const sortedRecords = records ? [...records].sort((a, b) => new Date(b.date) - new Date(a.date)) : [];
 
@@ -50,13 +52,6 @@ const HistoryScreen = () => {
         useNativeDriver: false,
       }).start(() => setExpandedRecordId(null));
     } else {
-      // 열기 애니메이션
-      // setExpandedRecordId(id);
-      // Animated.timing(heightAnim, {
-      //   toValue: 200, // 원하는 확장 높이 설정
-      //   duration: 300,
-      //   useNativeDriver: false,
-      // }).start();
       // 이전 아이템 닫기
       if (expandedRecordId && heightAnimRefs.current[expandedRecordId]) {
         Animated.timing(heightAnimRefs.current[expandedRecordId], {
@@ -68,8 +63,9 @@ const HistoryScreen = () => {
 
       // 새 아이템 열기
       setExpandedRecordId(id);
+      console.log('measuredHeight[id]:', measuredHeight[id]);
       Animated.timing(heightAnimRefs.current[id], {
-        toValue: 200, // 원하는 확장 높이 설정
+        toValue: measuredHeight[id] || 200,
         duration: 300,
         useNativeDriver: false,
       }).start();
@@ -104,37 +100,82 @@ const HistoryScreen = () => {
               <Text style={styles.recordText} numberOfLines={2}>
                 {item.result}
               </Text>
-              <Text numberOfLines={2} ellipsizeMode="tail">
-              ("18세기 말에 아시아의 각 원종이 유럽에 도입되고 이들 유럽과 아시아 원종간의 교배가 이루어져 화색이나 화형은 물론 사계성이나 개화성 등 생태적으로 변화가 많은 품종들이 만들어졌다.")
+              {!isExpanded && (  // 확장되지 않았을 때만 description 표시
+                <Text 
+                  numberOfLines={2} 
+                  ellipsizeMode="tail"
+                  style={styles.expandedText}
+                >
+                  {item.description}
+                </Text>
+              )}
+            </View>
+
+            {/* 측정용 숨겨진 텍스트 - 줄 제한 없음 */}
+            <View
+              style={{ 
+                position: 'absolute', 
+                opacity: 0,
+                left: -9999,  // 화면 밖으로 이동
+                width: '100%' // 너비 설정
+              }}
+              onLayout={(event) => {
+                const height = event.nativeEvent.layout.height;
+                if (height > 0) {
+                  setMeasuredHeight(prev => ({
+                    ...prev,
+                    [item.id]: height
+                  }));
+                }
+              }}
+            >
+              <Text 
+                 style={[
+                  styles.expandedText,
+                  { flexShrink: 0 }  // 텍스트가 줄어들지 않도록 설정
+                ]}
+                numberOfLines={undefined}  // 줄 제한 해제
+              >
+                {item.description}
               </Text>
             </View>
           </View>
         </TouchableOpacity>
 
         {/* 확장된 텍스트 */}
-        {/* {isExpanded && (
-          <Animated.View style={[styles.expandedContainer, { height: heightAnimRefs.current[item.id] }]}>
-            <ScrollView>
+        <Animated.View style={[styles.expandedContainer, { height: heightAnimRefs.current[item.id], overflow: 'hidden' }]}>
+          {/* {isExpanded && (
+            <ScrollView
+              onLayout={(event) => {
+                const { height } = event.nativeEvent.layout;
+                setContentHeight(prev => ({...prev, [item.id]: height}));
+              }}
+            >
               <Text style={styles.expandedText}>
-                {item.result}란? ("18세기 말에 아시아의 각 원종이 유럽에 도입되고 이들 유럽과 아시아 원종간의 교배가 이루어져 화색이나 화형은 물론 사계성이나 개화성 등 생태적으로 변화가 많은 품종들이 만들어졌다. 
-                18세기 이전의 장미를 고대장미(old rose), 19세기 이후의 장미를 현대장미(modern rose)라 한다.
-                장미는 온대성의 상록관목으로 햇빛을 좋아하는 식물이다. 적정생육온도는 구간 24~27℃이고 야간온도 15~18℃이다. 
-                30℃이상이면 꽃이 작아지고 꽃잎수가 줄어들어 퇴색하고 잎이 작아지며 엽색이 진해진다. 5℃정도이면 생육이 정지되고 0℃이하가 되면 낙엽이 지면서 휴면에 들어간다.")
+                {item.description}
               </Text>
             </ScrollView>
-          </Animated.View>
-        )} */}
-        <Animated.View style={[styles.expandedContainer, { height: heightAnimRefs.current[item.id], overflow: 'hidden', display: isExpanded ? 'flex' : 'none' }]}>
-          {isExpanded && (
-            <ScrollView>
-              <Text style={styles.expandedText}>
-                {item.result}란? ("18세기 말에 아시아의 각 원종이 유럽에 도입되고 이들 유럽과 아시아 원종간의 교배가 이루어져 화색이나 화형은 물론 사계성이나 개화성 등 생태적으로 변화가 많은 품종들이 만들어졌다. 
-                18세기 이전의 장미를 고대장미(old rose), 19세기 이후의 장미를 현대장미(modern rose)라 한다.
-                장미는 온대성의 상록관목으로 햇빛을 좋아하는 식물이다. 적정생육온도는 구간 24~27℃이고 야간온도 15~18℃이다. 
-                30℃이상이면 꽃이 작아지고 꽃잎수가 줄어들어 퇴색하고 잎이 작아지며 엽색이 진해진다. 5℃정도이면 생육이 정지되고 0℃이하가 되면 낙엽이 지면서 휴면에 들어간다.")
-              </Text>
-            </ScrollView>
-          )}
+          )} */}
+          {/* <View
+            onLayout={(event) => {
+              // const height = event.nativeEvent.layout.height;
+              // setMeasuredHeight(prev => ({
+              //   ...prev,
+              //   [item.id]: height
+              // }));
+              const height = event.nativeEvent.layout.height;
+              if (height > 0) {  // 높이가 0보다 큰 경우에만 저장
+                setMeasuredHeight(prev => ({
+                  ...prev,
+                  [item.id]: height
+                }));
+              }
+            }}
+          > */}
+            <Text style={styles.expandedText}>
+              {item.description}
+            </Text>
+          {/* </View> */}
         </Animated.View>
       </View>
     );
