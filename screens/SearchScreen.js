@@ -1,4 +1,4 @@
-import { View, Text, Button, Alert, ActivityIndicator, Modal, TouchableOpacity } from "react-native";
+import { View, Text, Button, Alert, ActivityIndicator, Modal, TouchableOpacity, ScrollView } from "react-native";
 import { useState, useContext, useEffect, useCallback } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
@@ -14,6 +14,7 @@ const SearchScreen = () => {
   const { user } = useGetGoogleAuth(); // 로그인 상태 가져오기
   const [pillImage, setPillImage] = useState(null);
   const [result, setResult] = useState(null); // 서버에서 가져온 결과
+  const [detailResult, setDetailResult] = useState(null); // 서버에서 가져온 결과
   // const [translatedResult, setTranslatedResult] = useState(null); // 번역 결과
   const [isLoadingResult, setIsLoadingResult] = useState(false); // 분석 로딩 상태
   const [isSaving, setIsSaving] = useState(false); // 기록 저장 로딩 상태
@@ -41,7 +42,7 @@ const SearchScreen = () => {
         console.log("FormData" + `${pair[0]}:`, pair[1]);
       }
   
-      const res = await fetch("http://1.209.148.143:8883/api/disPill/flower", {
+      const res = await fetch("http://1.209.148.143:8883/api/disPill/", {
         method: "POST",
         headers: {
           "Content-Type": "multipart/form-data",
@@ -57,13 +58,15 @@ const SearchScreen = () => {
       console.log("Response Data[search]:", data);
       
       // 서버 응답 확인 후 Alert 출력
-      if (data.message === "꽃 이미지 판별 성공" && data.name && data.translated_name) {
+      if (data.message === "알약 이미지 판별 성공" && data.name && data.description) {
         // Alert.alert("성공", `알약 이름: ${data.pill_name}`);
-        setResult(data.translated_name);
+        setResult(data.name);
+        setDetailResult(data.description);
         // setTranslatedResult(data.translated_pill_name);
       } else {
         // Alert.alert("에러", "알약 이름을 가져올 수 없습니다.");
         setResult("알약을 판별할 수 없습니다.");
+        setDetailResult(null);
       }
     } catch (error) {
       console.log("Error sending images[search]:", error.message);
@@ -107,6 +110,7 @@ const SearchScreen = () => {
       });
       formData.append("result", record.result);
       formData.append("email", record.email);
+      formData.append("description", record.description);
 
       // for (let pair of formData._parts) {
       //   console.log(`FormData 내용 - ${pair[0]}:`, pair[1]);
@@ -203,6 +207,7 @@ const SearchScreen = () => {
     setResetPhoto(true); // Photo 상태 초기화
     setPillImage(null);
     setResult(null);
+    setDetailResult(null);
     setIsLoadingResult(false);
   };
 
@@ -230,12 +235,21 @@ const SearchScreen = () => {
         <View style={styles.resultContainer}>
           {isLoadingResult ? (
             // 분석 결과 로딩 인디케이터
-            <ActivityIndicator size="large" color="#4a90e2" style={styles.resultLoading} />
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#4a90e2" />
+            </View>
           ) : (
             result && (
               <>
                 <Text style={styles.resultLabel}>분석 결과</Text>
                 <Text style={styles.resultText}>{result}</Text>
+                <ScrollView style={styles.scrollView}>
+                  {detailResult?.split("\n").map((line, index) => (
+                    <Text key={index} style={styles.detailResultText}>
+                      {line}
+                    </Text>
+                  ))}
+                </ScrollView>
                 <TouchableOpacity
                   style={styles.searchButton}
                   onPress={async () => {
@@ -288,6 +302,7 @@ const SearchScreen = () => {
                       image: pillImage,
                       result,
                       email: user.email,
+                      description: detailResult,
                     };
 
                     await saveToServer(newRecord);

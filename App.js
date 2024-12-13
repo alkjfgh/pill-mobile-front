@@ -38,23 +38,6 @@ export default function App() {
     <NavigationContainer>
       <RecordProvider>
         <SplashScreenComponent>
-          {/* <Stack.Navigator>
-            <Stack.Screen 
-              name="메뉴" 
-              component={DrawerNavigator} 
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen 
-              name="SettingScreen" 
-              component={SettingScreen}
-              options={{ title: "설정" }} 
-            />
-            <Stack.Screen 
-              name="계정" 
-              component={LoginScreen} 
-              options={{ title: "계정" }} 
-            />
-          </Stack.Navigator> */}
           {showOnboarding ? (
             <OnboardingScreen onDone={async () => {
               await AsyncStorage.setItem('hasShownOnboarding', 'true');

@@ -1,4 +1,4 @@
-import { Dimensions, Platform, StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 
 const HistoryStyle = StyleSheet.create({
   container: {
@@ -19,7 +19,7 @@ const HistoryStyle = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
     elevation: 2,
-    overflow: Platform.OS === 'android' ? 'hidden' : 'visible',
+    overflow: Platform.OS === "android" ? "hidden" : "visible",
     marginVertical: 1,
   },
   recordDate: {
@@ -42,82 +42,104 @@ const HistoryStyle = StyleSheet.create({
     marginLeft: 16,
     flex: 1,
   },
+  dateView:{
+    justifyContent:"center",
+    alignItems:"center",
+  },
   recordText: {
     fontSize: 16,
     color: "#1a1a1a",
     fontWeight: "500",
     lineHeight: 22,
+    
   },
-  modalContainer: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    width: "90%",
-    backgroundColor: "white",
-    borderRadius: 16,
-    padding: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  modalDate: {
-    fontSize: 16,
-    color: "#666",
-    marginBottom: 16,
-    fontWeight: "500",
-  },
-  modalImage: {
-    width: Dimensions.get("window").width * 0.8,
-    height: 200,
-    borderRadius: 12,
-    marginBottom: 16,
-  },
-  modalText: {
-    fontSize: 18,
-    color: "#1a1a1a",
-    marginBottom: 20,
-    lineHeight: 24,
-  },
-  closeButton: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+  expandedContainer: {
+    overflow: "hidden", // 텍스트가 부드럽게 확장되도록 설정
     marginTop: 8,
   },
-  closeButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
+  expandedText: {
+    fontSize: 14,
+    color: "#555",
+    lineHeight: 20,
   },
-  loadingSpinner: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  expandButton: {
+    backgroundColor: "#007BFF",
+    padding: 8,
+    borderRadius: 8,
+    marginTop: 8,
+    alignItems: "center",
+  },
+  expandButtonText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
   },
   emptyContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 32,
-    minHeight: Dimensions.get('window').height - 200,
   },
   emptyText: {
     fontSize: 16,
-    color: "#666",
+    color: "#888",
     textAlign: "center",
     lineHeight: 24,
   },
+  loadingSpinner: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  // 주석 처리된 모달 스타일
+  /*
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 16,
+    width: "80%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalImage: {
+    width: "100%",
+    height: 200,
+    marginBottom: 16,
+    borderRadius: 8,
+  },
+  modalDate: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 8,
+  },
+  modalText: {
+    fontSize: 16,
+    color: "#333",
+    lineHeight: 24,
+  },
+  closeButton: {
+    backgroundColor: "#FF6347",
+    padding: 10,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 16,
+  },
+  closeButtonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  */
 });
 
 export default HistoryStyle;
-
